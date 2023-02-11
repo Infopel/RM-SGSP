@@ -1,0 +1,1234 @@
+﻿@inject SignInManager<IdentityUser> signInManager;
+
+@{
+    ViewData["Title"] = "SGSP - Rádio de Moçambique | Planificação";
+}
+@*<div class="col-sm-12 margin-1">
+        <h1 style="font-weight: 300;">Cliente</h1>
+    </div>*@
+
+<div class="col-md-12 mb-2 justify-content-between margin-top">
+    <h1 class="float-left" style="font-weight: 300;">Planificação</h1>
+    <a href="/Spots/Create" style=" margin-top: 0.5rem;" class="btn btn-primary btn-sm float-right"><i class="fas fa-plus"></i> Adicionar Spot</a>
+    @{ if (signInManager.IsSignedIn(User) && User.IsInRole("Chefe de Publicidade e Vendas"))
+        {
+            <a href="/Anuncios/Create" style=" margin-top: 0.5rem; margin-right: 1rem;" class="btn btn-primary btn-sm float-right"><i class="fas fa-plus"></i> Adicionar Anúncio</a>
+            <div class="select-Style">
+                <select class="form-control-border border-width-2 form-control-sm float-right" id="tipoProcesso">
+                    <option value="1">Spots</option>
+                    <option value="2">Anúncios</option>
+                </select>
+            </div>
+        }
+    }
+    <button type="button" class="btn modal-open-plan" data-toggle="modal" hidden data-target="#modal-planificacao"></button>
+    <button type="button" class="btn modal-anuncio-p" data-toggle="modal" hidden data-target="#modal-anuncioPedente"></button>
+</div>
+<partial name="_Scheduler" />
+
+
+<div class="modal fade" id="modal-planificacao" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title-spot"></h4> <span style="margin: .6rem; color: white !important;" class="badge bg-warning" id="estadoSpan"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Descrição</label>
+                            <input type="text" class="form-control" id="descricao" placeholder="" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="fomr-group">
+                            <label class="control-label" id="dataE">Data da Emissão</label>
+                            <input type="date" class="form-control" id="datePlan" placeholder="dd/mm/yyyy" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label id="horaE">Hora da Emissão</label>
+                            <input type="time" class="form-control horaDisabled" id="horaT" name="Hora da Emissão" data-message-error="Este campo é obrigatório." placeholder="HH:mm" disabled>
+                            <span class="error invalid-feedback horaT"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label">Duração</label>
+                            <input class="form-control" id="duracaoTime" type="text" placeholder="Enter ..." disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="row ifMotivo" style="display: none">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label">Motivo</label>
+                            <textarea class="form-control" id="motivo" rows="5" placeholder="Insira o motivo ..." disabled></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label">Responsavel</label>
+                            <input class="form-control" id="responsavel" type="text" placeholder="" disabled />
+                        </div>
+                        <div class="fomr-group">
+                            <label class="control-label">Reagendar Emissão</label>
+                            <input type="date" class="form-control isOb" id="dataReagendamento" name="Reagendar Emissão" data-message-error="Este campo é obrigatório." placeholder="dd/mm/yyyy" />
+                            <span class="error invalid-feedback dataReagendamento"></span>
+                        </div>
+                    </div>
+                </div>
+                <span id="idPlanificacao" hidden="hidden"></span>
+            </div>
+            <div class="modal-footer toHidden">
+                <button type="button" class="btn btn-primary btn-sm rea-disabled salvarRegend" disabled>Reagendar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm close-plan" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-anuncioPedente" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title-spotA"></h4><span style="margin: .6rem; color: white !important;" class="badge bg-orange">Pendente de Autorização</span>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="descricaoA">Descrição</label>
+                            <input type="text" class="form-control" id="descricaoA" placeholder="Enter email" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Hora da Emissão</label>
+                            <input type="time" class="form-control" id="horaTA" name="Hora da Emissão" data-message-error="Este campo é obrigatório." placeholder="HH:mm" disabled>
+                            <span class="error invalid-feedback horaTA"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Data de Emissão</label>
+                            <input type="text" class="form-control" id="datePlanA" placeholder="Enter email" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="duracaoTimeA">Duração</label>
+                            <input type="text" class="form-control" id="duracaoTimeA" placeholder="Enter email" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="Transmissão">Estado</label>
+                            <select class="form-control isObA" name="Transmissão" data-message-error="Este campo é obrigatório." id="EstadoA">
+                                <option value="" disabled selected hidden>- Selecionar -</option>
+                                <option value="1">Transmitido</option>
+                                <option value="2">Não Transmitido</option>
+                            </select>
+                            <span class="error invalid-feedback Estado"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="locutorA">Responsavel</label>
+                            <input type="text" class="form-control" id="locutorA" placeholder="" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ifMotivoA" style="display: none">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Motivo</label>
+                            <textarea class="form-control disabled-onA" name="motivoA" data-message-error="Este campo é obrigatório." id="motivoA" rows="4" placeholder="Insira o motivo ..."></textarea>
+                            <span class="error invalid-feedback motivoA"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span id="idPlanificacaoA" style="display:none"></span>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm isDisabledA salvarEstadoA" disabled>Salvar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm comercial-click" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<span hidden id="idCanalUser">@User.FindFirst("idCanal").Value</span>
+
+<link rel='stylesheet' href='~/css/cupertino/jquery-ui.min.css' />
+<link href='~/css/fullcalendar.min.css' rel='stylesheet' />
+<link href='~/css/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+
+@section Scripts {
+    <script src="~/js/calendar.js"></script>
+    <script src='~/js/moment.min.js'></script>
+    <script src='~/js/jquery.min.js'></script>
+    <script src='~/js/fullcalendar.min.js'></script>
+    <script src='~/js/locale-all.js'></script>
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
+    <script>
+        $('.select2').select2();
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'bottom',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        var schedulerValue = null;
+        var dropwonValue = '';
+        const getIdCanal = $('#idCanalUser').html();
+        "use strict";
+
+        var connection = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.Debug)
+            .withUrl("/planificacaoHub", {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .build();
+
+        $(function () {
+
+            //connection.on("ReceivePlanificacao", function (planificacao) {
+
+            //    planAll(JSON.parse(planificacao));
+
+            //    $('#calendar').fullCalendar('removeEvents');
+
+            //    if (parseInt($('#tipoProcesso').val()) === 1)
+            //        $('#calendar').fullCalendar('addEventSource', spots);
+            //    else
+            //        $('#calendar').fullCalendar('addEventSource', anuncios);
+            //});
+
+            connection.on("ReceiveThePlanificacaoChange", function (planificacao, idCanal) {
+
+                const changePlan = JSON.parse(planificacao);
+                if (idCanal === parseInt(getIdCanal)) {
+                    for (let i in schedulerValue) {
+                        if (parseInt(spots[i].extendedProps.id) === parseInt(changePlan[0].extendedProps.id)) {
+
+                            spots[i].title = changePlan[0].title;
+                            spots[i].start = changePlan[0].start;
+                            spots[i].end = changePlan[0].end;
+                            spots[i].extendedProps.id = changePlan[0].extendedProps.id;
+                            spots[i].extendedProps.cliente = changePlan[0].extendedProps.cliente;
+                            spots[i].extendedProps.spot = changePlan[0].extendedProps.spot;
+                            spots[i].extendedProps.dataInicio = changePlan[0].extendedProps.dataInicio;
+                            spots[i].extendedProps.dataPassagem = changePlan[0].extendedProps.dataPassagem;
+                            spots[i].extendedProps.dataPassagemConfrimacao = changePlan[0].extendedProps.dataPassagemConfrimacao;
+                            spots[i].extendedProps.dataFim = changePlan[0].extendedProps.dataFim;
+                            spots[i].extendedProps.duracao = changePlan[0].extendedProps.duracao;
+                            spots[i].extendedProps.code = changePlan[0].extendedProps.code;
+                            spots[i].extendedProps.skipMotivo = changePlan[0].extendedProps.skipMotivo;
+                            spots[i].extendedProps.dataSkip = changePlan[0].extendedProps.dataSkip;
+                            spots[i].extendedProps.idTipo = changePlan[0].extendedProps.idTipo;
+                            spots[i].extendedProps.dataPlan = changePlan[0].extendedProps.dataPlan;
+                            spots[i].extendedProps.designacaProcesso = changePlan[0].extendedProps.designacaProcesso;
+                            spots[i].extendedProps.idEstado = changePlan[0].extendedProps.idEstado;
+                            spots[i].extendedProps.userCoordenador = changePlan[0].extendedProps.userCoordenador;
+                            spots[i].extendedProps.userLocutor = changePlan[0].extendedProps.userLocutor;
+                            spots[i].extendedProps.coordenadorParecer = changePlan[0].extendedProps.coordenadorParecer;
+                            spots[i].extendedProps.idCanal = changePlan[0].extendedProps.idCanal;
+                            spots[i].backgroundColor = changePlan[0].backgroundColor;
+                            spots[i].borderColor = changePlan[0].borderColor
+                            break;
+                        } else {
+                            for (let a in anuncios) {
+                                if (parseInt(anuncios[a].extendedProps.id) === parseInt(changePlan[0].extendedProps.id)) {
+
+                                    anuncios[a].title = changePlan[0].title;
+                                    anuncios[a].start = changePlan[0].start;
+                                    anuncios[a].end = changePlan[0].end;
+                                    anuncios[a].extendedProps.id = changePlan[0].extendedProps.id;
+                                    anuncios[a].extendedProps.cliente = changePlan[0].extendedProps.cliente;
+                                    anuncios[a].extendedProps.spot = changePlan[0].extendedProps.spot;
+                                    anuncios[a].extendedProps.dataInicio = changePlan[0].extendedProps.dataInicio;
+                                    anuncios[a].extendedProps.dataPassagem = changePlan[0].extendedProps.dataPassagem;
+                                    anuncios[a].extendedProps.dataPassagemConfrimacao = changePlan[0].extendedProps.dataPassagemConfrimacao;
+                                    anuncios[a].extendedProps.dataFim = changePlan[0].extendedProps.dataFim;
+                                    anuncios[a].extendedProps.duracao = changePlan[0].extendedProps.duracao;
+                                    anuncios[a].extendedProps.code = changePlan[0].extendedProps.code;
+                                    anuncios[a].extendedProps.skipMotivo = changePlan[0].extendedProps.skipMotivo;
+                                    anuncios[a].extendedProps.dataSkip = changePlan[0].extendedProps.dataSkip;
+                                    anuncios[a].extendedProps.idTipo = changePlan[0].extendedProps.idTipo;
+                                    anuncios[a].extendedProps.dataPlan = changePlan[0].extendedProps.dataPlan;
+                                    anuncios[a].extendedProps.designacaProcesso = changePlan[0].extendedProps.designacaProcesso;
+                                    anuncios[a].extendedProps.idEstado = changePlan[0].extendedProps.idEstado;
+                                    anuncios[a].extendedProps.userCoordenador = changePlan[0].extendedProps.userCoordenador;
+                                    anuncios[a].extendedProps.userLocutor = changePlan[0].extendedProps.userLocutor;
+                                    anuncios[a].extendedProps.coordenadorParecer = changePlan[0].extendedProps.coordenadorParecer;
+                                    anuncios[a].extendedProps.idCanal = changePlan[0].extendedProps.idCanal
+                                    anuncios[a].backgroundColor = changePlan[0].backgroundColor;
+                                    anuncios[a].borderColor = changePlan[0].borderColor
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $('#calendar').fullCalendar('removeEvents');
+
+                if (parseInt($('#tipoProcesso').val()) === 1)
+                    $('#calendar').fullCalendar('addEventSource', spots);
+                else
+                    $('#calendar').fullCalendar('addEventSource', anuncios);
+            });
+
+           connection.on("ReceivePlanificacaoChange", function (idCanal) {
+               if (idCanal === parseInt(getIdCanal)) {
+                    loadPlanificacao()
+                }
+             });
+
+            connection.start().then(function () {
+                console.log()
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+            var dragPlanificacao = [];
+
+            $('#calendar').fullCalendar({
+                theme: false,
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                locale: 'pt',
+                weekNumbers: false,
+                navLinks: true, // can click day/week names to navigate views
+                editable: true,
+                eventLimit: true,
+                allDaySlot: false,
+                eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
+                    dragPlanificacao = [];
+
+                    if ($('#calendar').fullCalendar('getView').name === 'agendaDay') {
+                        reorderProcesso(event.extendedProps.id, event.start.format());
+
+                        dragPlanificacao.push(
+                            {
+                                title: event.title,
+                                start: event.start.format(),
+                                end: event.start.format(),
+                                extendedProps: {
+                                    id: event.extendedProps.id,
+                                    cliente: event.extendedProps.cliente,
+                                    spot: event.extendedProps.designacao,
+                                    dataInicio: event.extendedProps.dataInicio,
+                                    dataPassagem: event.extendedProps.dataPassagem,
+                                    dataPassagemConfrimacao: event.extendedProps.dataPassagemConfrimacao,
+                                    dataFim: event.extendedProps.dataFim,
+                                    duracao: event.extendedProps.duracao,
+                                    code: event.extendedProps.code,
+                                    skipMotivo: event.extendedProps.skipMotivo,
+                                    dataSkip: event.extendedProps.dataSkip,
+                                    idTipo: event.extendedProps.idTipo,
+                                    dataPlan: event.start.format(),
+                                    designacaProcesso: event.extendedProps.designacaProcesso,
+                                    idEstado: event.extendedProps.idEstado,
+                                    userCoordenador: event.extendedProps.userCoordenador,
+                                    userLocutor: event.extendedProps.userLocutor,
+                                    coordenadorParecer: event.extendedProps.coordenadorParecer,
+                                    idCanal: event.extendedProps.idCanal
+                                },
+                                backgroundColor: event.backgroundColor,
+                                borderColor: event.borderColor
+                            }
+                        )
+                    }
+                    else if ($('#calendar').fullCalendar('getView').name === 'month') {
+                        if (event.extendedProps.idEstado === 1 || event.extendedProps.idEstado === 2 || event.extendedProps.idEstado === 5) {
+                            const todayDate = new Date();
+                            const dragDate = new Date(dateConvert(event.start.format()));
+                            const convertTodayDate = new Date(dateConvert(todayDate));
+
+                            if (dragDate.valueOf() === convertTodayDate.valueOf() || dragDate.valueOf() > convertTodayDate.valueOf()) {
+                                if (event.extendedProps.idEstado === 2) {
+                                    event.backgroundColor = '#ffc107';
+                                    event.borderColor = '#ffc107';
+                                    reagendarProcesso(event.extendedProps.id, event.start.format());
+                                    event.extendedProps.idEstado = 5;
+
+                                    dragPlanificacao.push(
+                                        {
+                                            title: event.title,
+                                            start: event.start,
+                                            end: event.end,
+                                            extendedProps: {
+                                                id: event.extendedProps.id,
+                                                cliente: event.extendedProps.cliente,
+                                                spot: event.extendedProps.designacao,
+                                                dataInicio: event.extendedProps.dataInicio,
+                                                dataPassagem: event.extendedProps.dataPassagem,
+                                                dataPassagemConfrimacao: event.extendedProps.dataPassagemConfrimacao,
+                                                dataFim: event.extendedProps.dataFim,
+                                                duracao: event.extendedProps.duracao,
+                                                code: event.extendedProps.code,
+                                                skipMotivo: event.extendedProps.skipMotivo,
+                                                dataSkip: event.extendedProps.dataSkip,
+                                                idTipo: event.extendedProps.idTipo,
+                                                dataPlan: event.extendedProps.dataPlan,
+                                                designacaProcesso: event.extendedProps.designacaProcesso,
+                                                idEstado: 5,
+                                                userCoordenador: event.extendedProps.userCoordenador,
+                                                userLocutor: event.extendedProps.userLocutor,
+                                                coordenadorParecer: event.extendedProps.coordenadorParecer,
+                                                idCanal: event.extendedProps.idCanal
+                                            },
+                                            backgroundColor: '#ffc107',
+                                            borderColor: '#ffc107'
+                                        }
+                                    )
+                                } else {
+                                    mesOrderProcesso(event.extendedProps.id, dateConvert(event.start.format()));
+
+                                    dragPlanificacao.push(
+                                        {
+                                            title: event.title,
+                                            start: event.start.format(),
+                                            end: event.start.format(),
+                                            extendedProps: {
+                                                id: event.extendedProps.id,
+                                                cliente: event.extendedProps.cliente,
+                                                spot: event.extendedProps.designacao,
+                                                dataInicio: event.extendedProps.dataInicio,
+                                                dataPassagem: event.extendedProps.dataPassagem,
+                                                dataPassagemConfrimacao: event.extendedProps.dataPassagemConfrimacao,
+                                                dataFim: event.extendedProps.dataFim,
+                                                duracao: event.extendedProps.duracao,
+                                                code: event.extendedProps.code,
+                                                skipMotivo: event.extendedProps.skipMotivo,
+                                                dataSkip: event.extendedProps.dataSkip,
+                                                idTipo: event.extendedProps.idTipo,
+                                                dataPlan: event.start.format(),
+                                                designacaProcesso: event.extendedProps.designacaProcesso,
+                                                idEstado: event.extendedProps.idEstado,
+                                                userCoordenador: event.extendedProps.userCoordenador,
+                                                userLocutor: event.extendedProps.userLocutor,
+                                                coordenadorParecer: event.extendedProps.coordenadorParecer,
+                                                idCanal: event.extendedProps.idCanal
+                                            },
+                                            backgroundColor: event.backgroundColor,
+                                            borderColor: event.borderColor
+                                        }
+                                    )
+                                }
+                            } else {
+                                revertFunc();
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: 'Não é possivel mover a Planificação para a Data desejada!'
+                                })
+                            }
+                        } else
+                            revertFunc();
+
+                    } else
+                        revertFunc();
+
+                },
+                eventResize: function (event, delta, revertFunc) {
+                    revertFunc();
+                },
+                events: '',
+                slotLabelFormat: "HH:mm",
+                eventRender: function (event, element) {
+                    element.find(".fc-time").remove();
+                    element.find(".fc-title").remove();
+                    element.find(".fc-content").remove();
+                    var new_description =
+                        '<div class="fc-content"><span>' + moment(event.extendedProps.dataPlan).format("HH:mm") + '</span> '
+                        + '<span style="font-weight: 600;">' + event.title + '</span></div>'
+                        ;
+                    element.append(new_description);
+                },
+                eventClick: function (info) {
+
+                    const data = info.extendedProps;
+
+                    if (data.idEstado == 4 && data.dataPassagemConfrimacao == null)
+                        openPlanPendente(data);
+                    else
+                        openPlanNormal(data);
+
+                }
+            });
+
+            const openPlanNormal = (data) => {
+                document.getElementById('title-spot').innerHTML = data.designacaProcesso + ": " + data.spot + " #" + data.code;
+                document.getElementById('descricao').value = data.cliente + " - " + data.designacaProcesso + ": " + data.spot
+                document.getElementById('datePlan').value = dateConvert(data.dataPlan);
+                //document.getElementById('datePlan').setAttribute("max", dateConvert(data.dataFim))
+                document.getElementById('duracaoTime').value = data.duracao + "s";
+                document.getElementById('idPlanificacao').innerHTML = data.id;
+
+                $("input").removeClass('is-valid is-invalid invalid');
+                if (data.idEstado == 1 || (data.idEstado == 2 && data.coordenadorParecer == null) || (data.idEstado == 3 && data.dataPassagemConfrimacao == null) || (data.idEstado == 4 && data.dataPassagemConfrimacao == null)) {
+                    $(".ifMotivo").hide();
+                    $(".disabled-on").prop("disabled", true);
+
+                    $('#estadoSpan').removeClass('bg-warning bg-danger bg-success').addClass('bg-primary');
+                    document.getElementById('estadoSpan').innerHTML = 'Pendente';
+                    $('.toHidden').hide();
+
+                    document.getElementById('horaT').value = GetTodayHour();
+                    document.getElementById('horaE').innerHTML = 'Hora da Emissão';
+                    document.getElementById('dataE').innerHTML = 'Data da Emissão';
+
+                } else if (data.idEstado == 2 && data.coordenadorParecer != null) {
+
+                    $(".ifMotivo").show();
+                    $(".disabled-on").prop("disabled", false);
+
+                    $('#estadoSpan').removeClass('bg-warning bg-primary bg-success').addClass('bg-danger');
+                    document.getElementById('estadoSpan').innerHTML = 'Não Transmitido';
+                    $('.toHidden').show();
+
+                    document.getElementById('horaT').value = GetDataPassagemHours(data.dataSkip);
+                    document.getElementById('horaE').innerHTML = 'Hora da Ñ Emissão';
+                    document.getElementById('dataE').innerHTML = 'Data da Ñ Emissão';
+
+                    if (data.userCoordenador != null) {
+                        document.getElementById('motivo').value = data.parecerCoordenador;
+                        document.getElementById('locutorA').value = data.userCoordenador;
+                    } else {
+                        document.getElementById('locutorA').value = data.userLocutor;
+                        document.getElementById('motivo').value = data.skipMotivo;
+                    }
+
+                } else if ((data.idEstado == 3 && data.dataPassagemConfrimacao != null) || (data.idEstado == 4 && data.dataPassagemConfrimacao != null)) {
+
+                    $(".ifMotivo").hide();
+                    $(".disabled-on").prop("disabled", true);
+
+                    $('#estadoSpan').removeClass('bg-warning bg-primary bg-danger').addClass('bg-success');
+                    document.getElementById('estadoSpan').innerHTML = 'Transmitido';
+                    $('.toHidden').hide();
+
+                    document.getElementById('horaT').value = GetDataPassagemHours(data.dataPassagem);
+                    document.getElementById('horaE').innerHTML = 'Hora da Emissão';
+                    document.getElementById('dataE').innerHTML = 'Data da Emissão';
+                } else if (data.idEstado == 5) {
+                    $(".ifMotivo").hide();
+                    $(".disabled-on").prop("disabled", true);
+
+                    $('#estadoSpan').removeClass('bg-danger bg-primary bg-success').addClass('bg-warning');
+                    document.getElementById('estadoSpan').innerHTML = 'Compensação';
+                    $('.toHidden').hide();
+
+                    document.getElementById('horaT').value = GetTodayHour();
+                    document.getElementById('horaE').innerHTML = 'Hora da Emissão';
+                    document.getElementById('dataE').innerHTML = 'Data da Emissão';
+                } else if (data.idEstado == 4 && data.dataPassagem == null && data.dataSkip == null) {
+                    $(".ifMotivo").hide();
+                    $(".disabled-on").prop("disabled", true);
+
+                    $('#estadoSpan').removeClass('bg-danger bg-primary bg-success bg-warning').addClass('bg-orange');
+                    document.getElementById('estadoSpan').innerHTML = 'Transmissão Imediata';
+                    $('.toHidden').hide();
+
+                    document.getElementById('horaT').value = GetDataPassagemHours(data.dataPlan);
+                    document.getElementById('horaE').innerHTML = 'Hora da Emissão';
+                    document.getElementById('dataE').innerHTML = 'Data da Emissão';
+                }
+
+                $('.modal-open-plan').click()
+            }
+
+            const openPlanPendente = (data) => {
+                document.getElementById('title-spotA').innerHTML = data.designacaProcesso + ": " + data.spot + " #" + data.code;
+                document.getElementById('descricaoA').value = data.cliente + " - " + data.designacaProcesso + ": " + data.spot
+                document.getElementById('datePlanA').value = dateConvert(data.dataPlan);
+                //document.getElementById('datePlan').setAttribute("max", dateConvert(data.dataFim))
+                document.getElementById('duracaoTimeA').value = data.duracao + "s";
+                document.getElementById('idPlanificacaoA').innerHTML = data.id;
+                document.getElementById('motivoA').value = data.skipMotivo;
+                if (data.dataPassagem != null)
+                    document.getElementById('horaTA').value = GetDataPassagemHours(data.dataPassagem);
+                else
+                    document.getElementById('horaTA').value = GetDataPassagemHours(data.dataPlan);
+
+                document.getElementById('locutorA').value = data.userLocutor;
+
+                $("input").removeClass('is-valid is-invalid invalid');
+
+
+                $('.modal-anuncio-p').click()
+            }
+
+            function reset() {
+                $('#EstadoA').val('').trigger('change');
+                $("input, textarea").removeClass('is-valid is-invalid invalid');
+                $(".invalid-feedback").hide();
+                $(".ifMotivoA").hide();
+                $(".isDisabledA ").prop("disabled", true);
+            }
+
+
+            var spots = [];
+            var anuncios = [];
+            const loadPlanificacao = () => {
+                Swal.fire({
+                    title: 'Por favor, aguarde !',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                $.ajax({
+                    url: "/api/Planificacoes/listPlanificacaoByIdCanalUSer",
+                    type: "get",
+                    success: function (data) {
+                        swal.close();
+                        const a = data
+                        schedulerValue = a;
+                        //idEstado 1 = Pendente; 2 = Ñ Trans; 3 = Trans; 4 = Reagendado;
+                        planAll(a);
+
+                        $('#calendar').fullCalendar('removeEvents');
+
+                        if (parseInt($('#tipoProcesso').val()) === 1)
+                            $('#calendar').fullCalendar('addEventSource', spots);
+                        else
+                            $('#calendar').fullCalendar('addEventSource', anuncios);
+                    },
+                    error: function (xhr, status, error) {
+                        swal.close();
+                        console.log(xhr)
+                    }
+                });
+            }
+            loadPlanificacao();
+
+            $('#tipoProcesso').on('input', function () {
+
+                $('#calendar').fullCalendar('removeEvents');
+
+                if ($(this).val() == 1) {
+                    $('#calendar').fullCalendar('addEventSource', spots);
+                    $('.card-title').text('Spots');
+                    $('.pendenteAuto').addClass('isToHide');
+                } else {
+                    $('#calendar').fullCalendar('addEventSource', anuncios);
+                    $('.card-title').text('Anúncios');
+                    $('.pendenteAuto').removeClass('isToHide');
+                }
+                $('.schedulerCheck').each(function () { this.checked = true; });
+            })
+
+            $('#EstadoA').on('input', function () {
+                if ($(this).val() == 2) {
+                    $(".ifMotivoA").show();
+                    $(".disabled-onA").prop("disabled", false);
+                } else {
+                    $(".ifMotivoA").hide();
+                    $(".disabled-onA").prop("disabled", false);
+                }
+
+                $(".isDisabledA").prop("disabled", false);
+            })
+
+            $('.salvarEstadoA').on('click', function () {
+                Validation.validate('.isObA');
+                if (!n) {
+                    if ($('#motivoA').is(':visible') && $('#motivoA').val().length > 1) {
+                        Swal.fire({
+                            title: 'Por favor, aguarde !',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading()
+                            },
+                        });
+                        saveParecer();
+                    } else {
+                        if (!$('#motivoA').is(':visible')) {
+                            saveParecer();
+                        } else {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Por favor, preencha o motivo, para poder concluír o processo.'
+                            })
+                        }
+                    }
+                }
+            })
+
+            const saveParecer = () => {
+
+                const mot = $('#motivoA').val() ? $('#motivoA').val() : "N/A";
+                $.ajax({
+                    contentType: 'application/json; charset=UTF-8',
+                    url: "/api/Planificacoes/parecerDep/" + parseInt($('#idPlanificacaoA').html()) + "/" + $('#EstadoA').val(),
+                    type: "post",
+                    data: JSON.stringify({ "parecerCoordenador": mot }),
+                    success: function (data) {
+                        swal.close();
+                        planAll(data);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Estado da Transmissão salva com Sucesso.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+                        $('#calendar').fullCalendar('removeEvents');
+
+                        if (parseInt($('#tipoProcesso').val()) === 1)
+                            $('#calendar').fullCalendar('addEventSource', spots);
+                        else
+                            $('#calendar').fullCalendar('addEventSource', anuncios);
+
+                        $('.comercial-click').click();
+                        reset();
+                        connection.invoke("PlanificacaoChange", parseInt(getIdCanal)).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        swal.close();
+                        console.log(xhr)
+                    }
+                });
+            }
+
+            function GetDateDiference(dataI, dataF) {
+                var date1 = new Date(dataI);
+                var date2 = new Date(dataF);
+
+                // To calculate the time difference of two dates
+                var Difference_In_Time = date2.getTime() - date1.getTime();
+
+                // To calculate the no. of days between two dates
+                var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+                return PushPlanificacao(Difference_In_Days, date1);
+            }
+
+            function GetDataPassagemHours(date) {
+                let d = new Date(date)
+
+                let hour = d.getHours();
+                let min = d.getMinutes();
+
+                if (min < 10)
+                    min = "0" + min;
+
+                if (hour < 10)
+                    hour = "0" + hour;
+
+                return hour + ":" + min;
+
+            }
+
+            function PushPlanificacao(days, date) {
+                const planificacao = [];
+                const oldDate = date;
+
+                for (var i = 0; i < days; i++) {
+                    const data = new Date(oldDate.setDate(oldDate.getDate() + 1))
+                    planificacao.push({ "Id": parseInt($('.id-cliente').html()), "IdCanal": 1, "DataPlanificacao": dateConvert(data) })
+                }
+
+                return planificacao;
+            }
+
+            function dateConvert(data) {
+                let date = new Date(data);
+                let d = date.getDate();
+                let m = date.getMonth() + 1;
+                let y = date.getFullYear();
+                return y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+            }
+
+
+            //get checked value
+            $('.schedulerCheck').click(function () {
+                var checkedValue = [];
+                $('.schedulerCheck:checked').each(function (i) {
+                    checkedValue[i] = $(this).val();
+                });
+                filterPlan(checkedValue, $('#tipoProcesso').val());
+            });
+
+            $('.salvarRegend').click(() => {
+                Validation.validate('.isOb');
+                if (!n) {
+                    Swal.fire({
+                        title: 'Por favor, aguarde !',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+
+                    reagendarProcesso(parseInt($('#idPlanificacao').html()), $('#dataReagendamento').val());
+                }
+            })
+
+            $('#dataReagendamento').on('input', () => {
+                $(".rea-disabled ").prop("disabled", false);
+            })
+
+            const reagendarProcesso = (id, data) => {
+
+                $.ajax({
+                    contentType: 'application/json; charset=UTF-8',
+                    url: "/api/Planificacoes/reagendamento/" + id,
+                    type: "post",
+                    data: JSON.stringify({ "dataPlanificacao": data }),
+                    success: function (data) {
+
+                        planAll(data);
+
+                        swal.close();
+                        $('.close-plan').click();
+
+                        if (parseInt($('#tipoProcesso').val()) == 1) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Spot Reagendado com Sucesso.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            $('#calendar').fullCalendar('removeEvents');
+                            $('#calendar').fullCalendar('addEventSource', spots);
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Anúncio Reagendado com Sucesso.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            $('#calendar').fullCalendar('removeEvents');
+                            $('#calendar').fullCalendar('addEventSource', anuncios);
+                        }
+                        connection.invoke("SendPlanificacaoChange", JSON.stringify(dragPlanificacao), parseInt(getIdCanal)).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                        connection.invoke("PlanificacaoChange", parseInt(getIdCanal)).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+
+                    },
+                    error: function (xhr, status, error) {
+                        swal.close();
+                        console.log(xhr)
+                    }
+                });
+            }
+
+            const reorderProcesso = (id, data) => {
+
+                $.ajax({
+                    contentType: 'application/json; charset=UTF-8',
+                    url: "/api/Planificacoes/orderPlanificacao/" + id,
+                    type: "post",
+                    data: JSON.stringify({ "dataPlanificacao": data }),
+                    success: function (data) {
+                        /*                        console.log(data)*/
+                        connection.invoke("SendPlanificacaoChange", JSON.stringify(dragPlanificacao), parseInt(getIdCanal)).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                        connection.invoke("PlanificacaoChange", parseInt(getIdCanal)).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                    error: function (xhr, status, error) {
+                        console.log(xhr)
+                    }
+                });
+            }
+
+            const mesOrderProcesso = (id, data) => {
+                $.ajax({
+                    contentType: 'application/json; charset=UTF-8',
+                    url: "/api/Planificacoes/orderPlanificacaoMonth/" + id,
+                    type: "post",
+                    data: JSON.stringify({ "dataPlanificacao": data, "prioridade": data }),
+                    success: function (data) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Data da planificação alterada com sucesso.'
+                        })
+
+                        connection.invoke("SendPlanificacaoChange", JSON.stringify(dragPlanificacao), parseInt(getIdCanal)).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                        connection.invoke("PlanificacaoChange", parseInt(getIdCanal)).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr)
+                    }
+                });
+            }
+
+            const planAll = (data) => {
+                spots = [];
+                anuncios = [];
+
+                const a = data;
+
+                for (let i = 0; i < a.length; i++) {
+                    if ((parseInt(a[i].estado) === 1 && !a[i].isReagendamento) || (parseInt(a[i].estado) == 2 && a[i].coordenadorParecer == null) || (parseInt(a[i].estado) == 3 && a[i].dataPassagemConfrimacao == null) || (parseInt(a[i].estado) == 4 && a[i].dataPassagem == null)) {
+                        if (parseInt(a[i].idTipo) == 1)
+                            spots.push(
+                                {
+                                    title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + + a[i].designacao + " - " + a[i].duracao + "s",
+                                    start: a[i].prioridade,
+                                    end: a[i].prioridade,
+                                    extendedProps: {
+                                        id: a[i].id,
+                                        cliente: a[i].cliente,
+                                        spot: a[i].designacao,
+                                        dataInicio: a[i].dataInicio,
+                                        dataPassagem: a[i].dataPassagem,
+                                        dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                        dataFim: a[i].dataFim,
+                                        duracao: a[i].duracao,
+                                        code: a[i].code,
+                                        skipMotivo: a[i].skipMotivo,
+                                        dataSkip: a[i].dataSkip,
+                                        idTipo: a[i].idTipo,
+                                        dataPlan: a[i].dataPlanificacao,
+                                        designacaProcesso: a[i].tipoProcesso,
+                                        idEstado: 1,
+                                        userCoordenador: a[i].userCoordenador,
+                                        userLocutor: a[i].userLocutor,
+                                        coordenadorParecer: a[i].coordenadorParecer,
+                                        idCanal: a[i].idCanal
+                                    },
+                                    backgroundColor: '#007bff',
+                                    borderColor: '#007bff'
+                                }
+                            )
+                        else
+                            anuncios.push(
+                                {
+                                    title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + + a[i].designacao + " - " + a[i].duracao + "s",
+                                    start: a[i].prioridade,
+                                    end: a[i].prioridade,
+                                    extendedProps: {
+                                        id: a[i].id,
+                                        cliente: a[i].cliente,
+                                        spot: a[i].designacao,
+                                        dataInicio: a[i].dataInicio,
+                                        dataPassagem: a[i].dataPassagem,
+                                        dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                        dataFim: a[i].dataFim,
+                                        duracao: a[i].duracao,
+                                        code: a[i].code,
+                                        skipMotivo: a[i].skipMotivo,
+                                        dataSkip: a[i].dataSkip,
+                                        idTipo: a[i].idTipo,
+                                        dataPlan: a[i].dataPlanificacao,
+                                        designacaProcesso: a[i].tipoProcesso,
+                                        idEstado: 1,
+                                        userCoordenador: a[i].userCoordenador,
+                                        userLocutor: a[i].userLocutor,
+                                        coordenadorParecer: a[i].coordenadorParecer,
+                                        idCanal: a[i].idCanal
+                                    },
+                                    backgroundColor: '#007bff',
+                                    borderColor: '#007bff'
+                                }
+                            )
+                    } else if (parseInt(a[i].estado) === 2 && a[i].coordenadorParecer != null) {
+                        if (parseInt(a[i].idTipo) == 1)
+                            spots.push(
+                                {
+                                    title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + + a[i].designacao + " - " + a[i].duracao + "s",
+                                    start: a[i].prioridade,
+                                    end: a[i].prioridade,
+                                    extendedProps: {
+                                        id: a[i].id,
+                                        cliente: a[i].cliente,
+                                        spot: a[i].designacao,
+                                        dataInicio: a[i].dataInicio,
+                                        dataPassagem: a[i].dataPassagem,
+                                        dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                        dataFim: a[i].dataFim,
+                                        duracao: a[i].duracao,
+                                        code: a[i].code,
+                                        skipMotivo: a[i].skipMotivo,
+                                        dataSkip: a[i].dataSkip,
+                                        idTipo: a[i].idTipo,
+                                        dataPlan: a[i].dataPlanificacao,
+                                        designacaProcesso: a[i].tipoProcesso,
+                                        idEstado: a[i].estado,
+                                        userCoordenador: a[i].userCoordenador,
+                                        userLocutor: a[i].userLocutor,
+                                        coordenadorParecer: a[i].coordenadorParecer,
+                                        idCanal: a[i].idCanal
+                                    },
+                                    backgroundColor: '#dc3545',
+                                    borderColor: '#dc3545'
+                                }
+                            )
+                        else
+                            anuncios.push(
+                                {
+                                    title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + + a[i].designacao + " - " + a[i].duracao + "s",
+                                    start: a[i].prioridade,
+                                    end: a[i].prioridade,
+                                    extendedProps: {
+                                        id: a[i].id,
+                                        cliente: a[i].cliente,
+                                        spot: a[i].designacao,
+                                        dataInicio: a[i].dataInicio,
+                                        dataPassagem: a[i].dataPassagem,
+                                        dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                        dataFim: a[i].dataFim,
+                                        duracao: a[i].duracao,
+                                        code: a[i].code,
+                                        skipMotivo: a[i].skipMotivo,
+                                        dataSkip: a[i].dataSkip,
+                                        idTipo: a[i].idTipo,
+                                        dataPlan: a[i].dataPlanificacao,
+                                        designacaProcesso: a[i].tipoProcesso,
+                                        idEstado: a[i].estado,
+                                        userCoordenador: a[i].userCoordenador,
+                                        userLocutor: a[i].userLocutor,
+                                        coordenadorParecer: a[i].coordenadorParecer,
+                                        idCanal: a[i].idCanal
+                                    },
+                                    backgroundColor: '#dc3545',
+                                    borderColor: '#dc3545'
+                                }
+                            )
+                    } else if (parseInt(a[i].estado) === 3 && a[i].dataPassagemConfrimacao != null) {
+                        if (parseInt(a[i].idTipo) == 1)
+                            spots.push(
+                                {
+                                    title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + + a[i].designacao + " - " + a[i].duracao + "s",
+                                    start: a[i].prioridade,
+                                    end: a[i].prioridade,
+                                    extendedProps: {
+                                        id: a[i].id,
+                                        cliente: a[i].cliente,
+                                        spot: a[i].designacao,
+                                        dataInicio: a[i].dataInicio,
+                                        dataPassagem: a[i].dataPassagem,
+                                        dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                        dataFim: a[i].dataFim,
+                                        duracao: a[i].duracao,
+                                        code: a[i].code,
+                                        skipMotivo: a[i].skipMotivo,
+                                        dataSkip: a[i].dataSkip,
+                                        idTipo: a[i].idTipo,
+                                        dataPlan: a[i].dataPlanificacao,
+                                        designacaProcesso: a[i].tipoProcesso,
+                                        idEstado: 3,
+                                        userCoordenador: a[i].userCoordenador,
+                                        userLocutor: a[i].userLocutor,
+                                        coordenadorParecer: a[i].coordenadorParecer,
+                                        idCanal: a[i].idCanal
+                                    },
+                                    backgroundColor: '#28a745',
+                                    borderColor: '#28a745'
+                                }
+                            )
+                        else
+                            anuncios.push(
+                                {
+                                    title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + + a[i].designacao + " - " + a[i].duracao + "s",
+                                    start: a[i].prioridade,
+                                    end: a[i].prioridade,
+                                    extendedProps: {
+                                        id: a[i].id,
+                                        cliente: a[i].cliente,
+                                        spot: a[i].designacao,
+                                        dataInicio: a[i].dataInicio,
+                                        dataPassagem: a[i].dataPassagem,
+                                        dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                        dataFim: a[i].dataFim,
+                                        duracao: a[i].duracao,
+                                        code: a[i].code,
+                                        skipMotivo: a[i].skipMotivo,
+                                        dataSkip: a[i].dataSkip,
+                                        idTipo: a[i].idTipo,
+                                        dataPlan: a[i].dataPlanificacao,
+                                        designacaProcesso: a[i].tipoProcesso,
+                                        idEstado: 3,
+                                        userCoordenador: a[i].userCoordenador,
+                                        userLocutor: a[i].userLocutor,
+                                        coordenadorParecer: a[i].coordenadorParecer,
+                                        idCanal: a[i].idCanal
+                                    },
+                                    backgroundColor: '#28a745',
+                                    borderColor: '#28a745'
+                                }
+                            )
+                    } else if (parseInt(a[i].estado) === 1 && a[i].isReagendamento) {
+                        if (parseInt(a[i].idTipo) == 1)
+                            spots.push(
+                                {
+                                    title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + + a[i].designacao + " - " + a[i].duracao + "s",
+                                    start: a[i].prioridade,
+                                    end: a[i].prioridade,
+                                    extendedProps: {
+                                        id: a[i].id,
+                                        cliente: a[i].cliente,
+                                        spot: a[i].designacao,
+                                        dataInicio: a[i].dataInicio,
+                                        dataPassagem: a[i].dataPassagem,
+                                        dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                        dataFim: a[i].dataFim,
+                                        duracao: a[i].duracao,
+                                        code: a[i].code,
+                                        skipMotivo: a[i].skipMotivo,
+                                        dataSkip: a[i].dataSkip,
+                                        idTipo: a[i].idTipo,
+                                        dataPlan: a[i].dataPlanificacao,
+                                        designacaProcesso: a[i].tipoProcesso,
+                                        idEstado: 5,
+                                        userCoordenador: a[i].userCoordenador,
+                                        userLocutor: a[i].userLocutor,
+                                        coordenadorParecer: a[i].coordenadorParecer,
+                                        idCanal: a[i].idCanal
+                                    },
+                                    backgroundColor: '#ffc107',
+                                    borderColor: '#ffc107'
+                                }
+                            )
+                        else
+                            anuncios.push(
+                                {
+                                    title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + + a[i].designacao + " - " + a[i].duracao + "s",
+                                    start: a[i].prioridade,
+                                    end: a[i].prioridade,
+                                    extendedProps: {
+                                        id: a[i].id,
+                                        cliente: a[i].cliente,
+                                        spot: a[i].designacao,
+                                        dataInicio: a[i].dataInicio,
+                                        dataPassagem: a[i].dataPassagem,
+                                        dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                        dataFim: a[i].dataFim,
+                                        duracao: a[i].duracao,
+                                        code: a[i].code,
+                                        skipMotivo: a[i].skipMotivo,
+                                        dataSkip: a[i].dataSkip,
+                                        idTipo: a[i].idTipo,
+                                        dataPlan: a[i].dataPlanificacao,
+                                        designacaProcesso: a[i].tipoProcesso,
+                                        idEstado: 5,
+                                        userCoordenador: a[i].userCoordenador,
+                                        userLocutor: a[i].userLocutor,
+                                        coordenadorParecer: a[i].coordenadorParecer,
+                                        idCanal: a[i].idCanal
+                                    },
+                                    backgroundColor: '#ffc107',
+                                    borderColor: '#ffc107'
+                                }
+                            )
+                    } else if (parseInt(a[i].estado) === 4 && a[i].dataPassagem == null && a[i].dataSkip == null) {
+                        anuncios.push(
+                            {
+                                title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + + a[i].designacao + " - " + a[i].duracao + "s",
+                                start: a[i].prioridade,
+                                end: a[i].prioridade,
+                                extendedProps: {
+                                    id: a[i].id,
+                                    cliente: a[i].cliente,
+                                    spot: a[i].designacao,
+                                    dataInicio: a[i].dataInicio,
+                                    dataPassagem: a[i].dataPassagem,
+                                    dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                    dataFim: a[i].dataFim,
+                                    duracao: a[i].duracao,
+                                    code: a[i].code,
+                                    skipMotivo: a[i].skipMotivo,
+                                    dataSkip: a[i].dataSkip,
+                                    idTipo: a[i].idTipo,
+                                    dataPlan: a[i].dataPlanificacao,
+                                    designacaProcesso: a[i].tipoProcesso,
+                                    idEstado: a[i].estado,
+                                    userCoordenador: a[i].userCoordenador,
+                                    userLocutor: a[i].userLocutor,
+                                    coordenadorParecer: a[i].coordenadorParecer,
+                                    idCanal: a[i].idCanal
+                                },
+                                backgroundColor: '#fd7e14',
+                                borderColor: '#fd7e14'
+                            }
+                        )
+                    }
+                }
+            }
+
+            const filterPlan = (data, tipoProcesso) => {
+                let plano = null;
+
+                if (parseInt(tipoProcesso) === 1)
+                    plano = spots
+                else
+                    plano = anuncios
+
+                const filter = data;
+                let newEvent = [];
+                for (let i = 0; i < filter.length; i++) {
+                    const valueclicked = filter[i];
+                    for (let as = 0; as < plano.length; as++) {
+                        if (valueclicked == plano[as].extendedProps.idEstado)
+                            newEvent.push(
+                                {
+                                    title: plano[as].title,
+                                    start: plano[as].start,
+                                    end: plano[as].end,
+                                    extendedProps: {
+                                        id: plano[as].extendedProps.id,
+                                        cliente: plano[as].extendedProps.cliente,
+                                        spot: plano[as].extendedProps.spot,
+                                        dataInicio: plano[as].extendedProps.dataInicio,
+                                        dataPassagem: plano[as].extendedProps.dataPassagem,
+                                        dataPassagemConfrimacao: plano[as].extendedProps.dataPassagemConfrimacao,
+                                        dataFim: plano[as].extendedProps.dataFim,
+                                        duracao: plano[as].extendedProps.duracao,
+                                        code: plano[as].extendedProps.code,
+                                        skipMotivo: plano[as].extendedProps.skipMotivo,
+                                        idTipo: plano[as].extendedProps.idTipo,
+                                        dataPlan: plano[as].extendedProps.dataPlan,
+                                        designacaProcesso: plano[as].extendedProps.designacaProcesso,
+                                        idEstado: plano[as].extendedProps.idEstado,
+                                        userCoordenador: plano[as].extendedProps.userCoordenador,
+                                        userLocutor: plano[as].extendedProps.userLocutor,
+                                        coordenadorParecer: plano[as].extendedProps.coordenadorParecer,
+                                        IdCanal: plano[as].extendedProps.idCanal
+                                    },
+                                    backgroundColor: plano[as].backgroundColor,
+                                    borderColor: plano[as].borderColor
+                                },
+                            )
+                    }
+                }
+
+                $('#calendar').fullCalendar('removeEvents');
+                $('#calendar').fullCalendar('addEventSource', newEvent);
+            }
+        })
+    </script>
+}

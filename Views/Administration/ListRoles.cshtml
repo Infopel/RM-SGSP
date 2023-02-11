@@ -1,0 +1,79 @@
+﻿@model SGSP.Models.ListRoleViewModel
+@{
+    ViewData["Title"] = "ListRoles";
+}
+
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Roles</h1>
+</div>
+
+<div class="col-md-12 mb-4">
+    <a asp-action="CreateRole" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Adicionar</a>
+</div>
+<div class="col-md-12 table-responsive">
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover text-nowrap">
+                <thead>
+                    <tr>
+                        <th style="width: 10px">#</th>
+                        <th>Name</th>
+                        <th class="float-right">Operações</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int i = 0;}
+
+                    @foreach (var role in Model.roles)
+                    {
+                        <tr>
+                            <td>@(i+1)</td>
+                            <td>@role.Name</td>
+                            <td>
+                            <td>
+                                <a class="btn btn-xs btn-default" asp-action="EditRole" asp-controller="Administration" asp-route-id="@role.Id">
+                                    Editar<i class="fas fa-pencil-alt"></i>
+                                </a>
+
+                                <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                                    <span id="confirmDeleteSpan_@role.Id" style="display:none">
+                                        <span>Você tem certeza que deseja apagar?</span>
+                                        <button type="submit" class="btn btn-xs btn-danger">Yes</button>
+                                        <a href="#" class="btn btn-xs btn-primary" onclick="confirmDelete('@role.Id', false)">No</a>
+                                    </span>
+
+                                    <span id="deleteSpan_@role.Id">
+                                        <a href="#" class="btn btn-xs btn-danger" onclick="confirmDelete('@role.Id', true)">Delete <i class="fas fa-trash-alt"></i></a>
+                                    </span>
+                                </form>
+                            </td>
+
+                        </tr>
+                        i++;
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(uniqueId, isTrue) {
+
+            var deleteSpan = 'deleteSpan_' + uniqueId;
+            var confirmDeleteSpan = 'confirmDeleteSpan_' + uniqueId;
+
+            if (isTrue) {
+                $('#' + deleteSpan).hide();
+                $('#' + confirmDeleteSpan).show();
+            } else {
+                $('#' + deleteSpan).show();
+                $('#' + confirmDeleteSpan).hide();
+            }
+        }
+    </script>
+}

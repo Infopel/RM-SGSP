@@ -1,0 +1,147 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en" moznomarginboxes mozdisallowselectionprint>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <link href="~/css/print-style.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="wrapper">
+
+        <section class="invoice">
+
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="page-header">
+                        <img src="~/images/background_RM.png" />
+                    </h2>
+                    <p class="page-header">
+                        Direcção Comercial<br />
+                        Departamento de Publicidade e Vendas<br />
+                        Certificado de Emissão<br />
+                        <span class="nomeCanal"></span>
+                    </p>
+                </div>
+
+            </div>
+            <br />
+            <div class="row invoice-info">
+                <p>
+                    Certificamos que foi transmitida, nos dias e horas abaixo mencionadas,e
+                    no(a) <span class="nomeCanal"></span> a campanha do(a)
+                    <span class="clienteNome"></span> com designação de
+                    <span class="nomeCampanha"></span> com <span class="duracao"></span>.
+                </p>
+            </div>
+
+            <br />
+            <div class="row">
+                <div class="col-12 table-responsive">
+                    <table id="records_table" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th colspan="2"><span class="periodo"></span>&nbsp;</th>
+                            </tr>
+                            <tr>
+                                <th class="col-2">Dias</th>
+                                <th class="col-10">Horas de Transmissão na(o)  <span class="nomeCanal"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <br />
+            <br />
+            <div class="row assinatura">
+                <p class="todayDate"></p>
+                <p> Departamento de Publicidade e Vendas</p><br /><br />
+                <span class="line"></span>
+                <br />
+                <p class="userOperador"></p>
+            </div>
+
+
+        </section>
+
+    </div>
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+
+    <script>
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+            return false;
+        };
+
+
+        const ajaxCall = () => {
+            const model = {
+                "idCanal": parseInt(getUrlParameter('idCanal')),
+                "tipoSpot": parseInt(getUrlParameter('tipoSpot')),
+                "idCliente": parseInt(getUrlParameter('idCliente')),
+                "dataI": getUrlParameter('dataI'),
+                "dataF": getUrlParameter('dataF'),
+                "reportName": "CertificadoEmissao"
+            }
+            $.ajax({
+                url: '/Report/PrintCertificado',
+                type: "get",
+                cache: false,
+                data: model,
+                success: function (data) {
+                    $('.nomeCanal').text(data.data[1].canalDesignacao)
+                    $('.clienteNome').text(data.data[1].clienteDesignaca)
+                    $('.nomeCampanha').text(data.data[1].spotDesignacao)
+                    $('.userOperador').text(data.data[0].userName)
+                    $('.todayDate').text(data.data[0].printDay)
+
+                    $('.periodo').text(data.data[0].periodo)
+
+                    var duracao = data.data[1].duracaoSpot;
+                    duracao = duracao.split(":");
+
+                    if (parseInt(duracao[1]) != 0)
+                        $('.duracao').text(duracao[1] + "' " + duracao[2] + '"')
+                    else
+                        $('.duracao').text(duracao[2] + '"')
+
+                    var trHTML = '';
+                    $.each(data.data, function (i, item) {
+                        trHTML += '<tr><td>' + item.dias + '</td><td>' + item.horas + '</td></tr>';
+                    });
+                    $('#records_table').append(trHTML);
+                    window.addEventListener("load", window.print());
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            })
+        }
+        ajaxCall();
+
+    </script>
+</body>
+</html>

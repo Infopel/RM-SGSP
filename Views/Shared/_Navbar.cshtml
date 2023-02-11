@@ -1,0 +1,250 @@
+﻿@inject SignInManager<IdentityUser> signInManager;
+@*<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <partial name="_NavbarLeft" />
+        <partial name="_NavbarRight" />
+    </nav>*@
+<!-- Navbar -->
+<nav class="main-header navbar-fixed navbar navbar-expand-md navbar-light navbar-white">
+    <div class="container">
+        @*<a asp-action="index" asp-controller="home" class="navbar-brand">*@
+        <a asp-action="index" asp-controller="home" class="navbar-brand">
+            <div class="logo-style">
+                <img src="~/dist/img/logo.png" alt="AdminLTE Logo" class="brand-img">
+                <span class="brand-text"> <span>Sistema de Gestão de</span><br /><span>Spots Publiucitários</span></span>
+            </div>
+        </a>
+       <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Administrador") || User.IsInRole("Chefe de Publicidade e Vendas") || User.IsInRole("Operador Comercial")))
+                {
+                    <li class="nav-item">
+                        <a href="/Spots" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconSpots" />
+                                <span>Spots</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Planificacao" class="nav-link nav-link-new">
+                            <div class="icon">
+                                <partial name="_IconPlanificacao" />
+                                <span>Planificação</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/LocutorAdmin" class="nav-link nav-link-new">
+                            <div class="icon">
+                                <partial name="_IconPlanificacao" />
+                                <span>Locutor</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Anuncios" class="nav-link nav-link-new">
+                            <div class="icon">
+                                <partial name="_IconPlanificacao" />
+                                <span>Anúncios</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Clientes" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconClientes" />
+                                <span>Cliente</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Canals" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconClientes" />
+                                <span>Canal</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Relatorios" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconRelatorio" />
+                                <span>Relatórios</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+                            Administração
+                        </a>
+                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+
+                            <li class="dropdown-submenu dropdown-hover">
+                                <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">Roles</a>
+                                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
+
+                                    <!-- End Level three -->
+
+                                    <li><a asp-action="ListRoles" asp-controller="Administration" class="dropdown-item">Listagem</a></li>
+                                    <li><a asp-action="CreateRole" asp-controller="Administration" class="dropdown-item">Adicionar</a></li>
+
+                                </ul>
+                            </li>
+                            <!-- End Level two -->
+
+                            <li class="dropdown-submenu dropdown-hover">
+                                <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">Utilizadores</a>
+                                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
+
+                                    <!-- End Level three -->
+
+                                    <li><a asp-action="ListUsers" asp-controller="Administration" class="dropdown-item">Listagem</a></li>
+                                    <li><a asp-action="CreateUserWithRole" asp-controller="Administration" class="dropdown-item">Adicionar</a></li>
+
+                                </ul>
+                            </li>
+                            <!-- End Level two -->
+                        </ul>
+                    </li>
+                }
+                else if (signInManager.IsSignedIn(User) && User.IsInRole("Locutor"))
+                {
+                    <li class="nav-item">
+                        <a href="/LocutorAdmin" class="nav-link nav-link-new">
+                            <div class="icon">
+                                <partial name="_IconPlanificacao" />
+                                <span>Planificação</span>
+                            </div>
+                        </a>
+                    </li>
+
+                }
+                else if (signInManager.IsSignedIn(User) && User.IsInRole("Sonorizador"))
+                {
+                    <li class="nav-item">
+                        <a href="/SonorizadorAdmin" class="nav-link nav-link-new">
+                            <div class="icon">
+                                <partial name="_IconPlanificacao" />
+                                <span>Planificação</span>
+                            </div>
+                        </a>
+                    </li>
+                }
+                else if (signInManager.IsSignedIn(User) && User.IsInRole("Coordenador"))
+                {
+                    <li class="nav-item">
+                        <a href="/CoordenadorAdmin" class="nav-link nav-link-new">
+                            <div class="icon">
+                                <partial name="_IconPlanificacao" />
+                                <span>Planificação</span>
+                            </div>
+                        </a>
+                    </li>
+                }
+                @*else if (signInManager.IsSignedIn(User) && User.IsInRole("Operador Comercial"))
+                {
+                    <li class="nav-item">
+                        <a href="/Spots/ListSpots" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconSpots" />
+                                <span>Spots</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Planificacao/Comercial" class="nav-link nav-link-new">
+                            <div class="icon">
+                                <partial name="_IconPlanificacao" />
+                                <span>Planificação</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Clientes" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconClientes" />
+                                <span>Cliente</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Relatorios" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconRelatorio" />
+                                <span>Relatório</span>
+                            </div>
+                        </a>
+                    </li>
+                }
+                else if (signInManager.IsSignedIn(User) && User.IsInRole("Chefe de Publicidade e Vendas"))
+                {
+                    <li class="nav-item">
+                        <a href="/Spots/ListSpots" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconSpots" />
+                                <span>Spots</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Planificacao/Comercial" class="nav-link nav-link-new">
+                            <div class="icon">
+                                <partial name="_IconPlanificacao" />
+                                <span>Planificação</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Anuncios/ListAnuncios" class="nav-link nav-link-new">
+                            <div class="icon">
+                                <partial name="_IconPlanificacao" />
+                                <span>Anúncios</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Clientes" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconClientes" />
+                                <span>Cliente</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Relatorios" class="nav-link">
+                            <div class="icon">
+                                <partial name="_IconRelatorio" />
+                                <span>Relatório</span>
+                            </div>
+                        </a>
+                    </li>
+                }*@
+                @*<li class="nav-item">
+            <a href="#" class="nav-link">
+                <div class="icon">
+                    <partial name="_IconCanal" />
+                    <span>Canal</span>
+                </div>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <div class="icon">
+                    <partial name="_IconUtilizador" />
+                    <span>Utilizador</span>
+                </div>
+            </a>*@
+                @*</li>*@
+            </ul>
+        </div>
+
+        <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+            <partial name="_NotificationsDropdownMenu" />
+        </ul>
+    </div>
+</nav>
+<!-- /.navbar -->

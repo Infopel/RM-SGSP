@@ -1,0 +1,360 @@
+﻿@{
+    ViewData["Title"] = "SGSP - Rádio de Moçambique | Canais";
+}
+
+<div class="col-md-12 mb-2 justify-content-between margin-top mb-4">
+    <h1 style="font-weight: 300;">Listagem de Canais</h1>
+    <a href="/Canals/Create" style=" margin-top: 0.5rem;" class="btn btn-primary btn-sm float-right"><i class="fas fa-plus"></i> Adicionar Canal</a>
+    <a href="/Canals/CreateJanelas" style=" margin-top: 0.5rem; margin-right: 1rem;" class="btn btn-primary btn-sm float-right"><i class="fas fa-plus"></i> Adicionar Janela</a>
+</div>
+
+<div class="col-md-12 table-responsive">
+    <div class="card">
+        <div class="card-body">
+            <table id="canalsTable" class="table table-sm table-hover dataTable dtr-inline">
+                <thead>
+                    <tr>
+                        <th>CÓDIGO</th>
+                        <th>NOME DO CANAL</th>
+                        <th>jANELA DE TRANSMISSÃO</th>
+                        <th>DIAS DA SEMANA</th>
+                        <th>HORA DE INÍCIO</th>
+                        <th>HORA DE TERMINO</th>
+                        <th class="text-center"><i class="fas fa-ellipsis-v"></i></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-editarCanal" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Código Canal</label>
+                            <input type="text" class="form-control isObrigatorioEdit" id="codeCanal" name="Código Canal" data-message-error="Este campo é obrigatório." placeholder="Insira o Código do Canal" disabled>
+                            <span class="error invalid-feedback codeCanal"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="form-group">
+                            <label>Nome do Canal</label>
+                            <input type="text" class="form-control isObrigatorioEdit" id="nomeCanal" name="Nome do Canal" placeholder="Insira o nome do canal" data-message-error="Este campo é obrigatório." />
+                            <span class="error invalid-feedback nomeCanal"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label>Janela de Transmissão</label>
+                            <input type="email" class="form-control isObrigatorioEdit" name="Janela de Transmissão" placeholder="Insira a designação da Janela" id="designacaoJanela" />
+                            <span class="error invalid-feedback designacaoJanela"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="form-group">
+                            <label class="control-label">Dias da Semana</label>
+                            <div class="select2-blue">
+                                <select class="select2 isObrigatorioEdit" id="dias" multiple="multiple" data-dropdown-css-class="select2-blue" data-message-error="Este campo é obrigatório." data-placeholder="Selecionar dias da semana"
+                                        style="width: 100%;">
+                                    <option value="Dom">Domingo</option>
+                                    <option value="Seg">Segunda-Feira</option>
+                                    <option value="Ter">Terça-Feira</option>
+                                    <option value="Qua">Quarta-Feira</option>
+                                    <option value="Qui">Quinta-Feira</option>
+                                    <option value="Sex">Sexta-Feira</option>
+                                    <option value="Sáb">Sábado</option>
+                                </select>
+                            </div>
+                            <span class="error invalid-feedback dias"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Hora de Início</label>
+                            <input type="time" class="form-control isObrigatorioEdit" id="horaI" name="Hora de Início" data-message-error="Este campo é obrigatório." />
+                            <span class="error invalid-feedback horaI"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Hora de Término</label>
+                            <input type="time" class="form-control isObrigatorioEdit" id="horaF" name="Hora de Término" data-message-error="Este campo é obrigatório." />
+                            <span class="error invalid-feedback horaF"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span class="id-janela" hidden="hidden"></span>
+            <span class="id-canal" hidden="hidden"></span>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm saveUpdade disabled-on" disabled>Salvar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+@section scripts{
+<!-- Bootstrap 4 -->
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables  & Plugins -->
+<script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="~/plugins/select2/js/select2.full.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.select2').select2();
+
+        $('#canalsTable').DataTable({
+            "ajax": {
+                "url": "api/Janelas",
+                "type": "Get"
+            },
+            columns: [
+                { data: "id" },
+                { data: "canal" },
+                { data: "designacao" },
+                { data: "diasSemana" },
+                {
+                    data: "horaInicio", render: function (data, type, row, meta) {
+                        return data.substring(0, data.length - 3);
+                    }
+                },
+                {
+                    data: "horaFim", render: function (data, type, row, meta) {
+                        return data.substring(0, data.length - 3);
+                    }
+                },
+                { data: "action" }
+            ],
+            "oLanguage": {
+                "sSearch": "Pesquisar Canal:"
+            }
+
+        });
+        $('#canalsTable tbody').off('click');
+        $('#canalsTable').on('click', '.editarr', function () {
+
+            const code = $(this).attr("data-codecanal");
+            const idCanal = $(this).attr("data-idcanal");
+            const idJanela = $(this).attr("data-idjanela");
+            const designacaoCanal = $(this).attr("data-designacaocanal");
+            const designacaoJanela = $(this).attr("data-designacaojanela");
+            const diasSemana = $(this).attr("data-dias");
+            const horaI = $(this).attr("data-horai");
+            const horaF = $(this).attr("data-horaf");
+
+            $("#codeCanal").val(idCanal)
+            $("#nomeCanal").val(designacaoCanal)
+            $("#designacaoJanela").val(designacaoJanela)
+            $("#horaI").val(horaI.substring(0, horaI.length - 3))
+            $("#horaF").val(horaF.substring(0, horaF.length - 3))
+            $("#dias").val(diasSemana.split(';')).trigger('change')
+            $(".id-janela").text(idJanela)
+            $(".id-canal").text(idCanal)
+
+            $('#modal-editarCanal').modal('show');
+
+        });
+
+
+        function ReloadGrid() {
+            $('#canalsTable').DataTable().clear();
+            $('#canalsTable').DataTable().ajax.reload();
+        }
+
+        $('#horaI').on('input', () => {
+            $(".hDisabled-on").prop("disabled", false);
+
+            if ($('#horaF').val().length > 0) {
+                if ($('#horaI').val() > $('#horaF').val() || $('#horaI').val() == $('#horaF').val()) {
+                    $('#horaI').removeClass('is-valid').addClass('is-invalid invalid');
+                    $('.horaI').html("Uma " + $('#horaI').attr('name') + " válido é obrigatório.")
+                } else {
+                    $('.horaI').hide();
+                    $('#horaI').removeClass('is-invalid invalid').addClass('is-valid');
+                }
+            }
+        })
+
+        $('#horaF').on('input', () => {
+
+            if ($('#horaI').val().length > 0) {
+                if ($('#horaF').val() < $('#horaI').val() || $('#horaF').val() == $('#horaI').val()) {
+                    $('#horaF').removeClass('is-valid').addClass('is-invalid invalid');
+                    $('.horaF').html("Uma " + $('#horaF').attr('name') + " válido é obrigatório.")
+                } else {
+                    $('.horaF').hide();
+                    $('#horaF').removeClass('is-invalid invalid').addClass('is-valid');
+                }
+            }
+        })
+
+        $('input, select').on('input', function () {
+            $(".disabled-on").prop("disabled", false);
+        })
+
+        $('#canalsTable').on('click', '.destivarr', function () {
+
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-danger mg-1'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Tem certeza, que deseja remover esta Janela de Transmissão?',
+                text: "Você não poderá reverter esta operação!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, remover!',
+                cancelButtonText: 'Não, cancelar!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Por favor, aguarde !',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+                    $.ajax({
+                        url: "/api/Janelas/disableJanela/" + parseInt($(this).attr("data-idJanela")),
+                        type: "post",
+                        success: function () {
+                            swal.close();
+                            ReloadGrid();
+                            swalWithBootstrapButtons.fire(
+                                'Removido!',
+                                'Janela de Transmissão foi removida :).',
+                                'success'
+                            )
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(xhr)
+                        }
+                    });
+
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelado',
+                        'Sua operação foi abortada :)',
+                        'error'
+                    )
+                }
+            })
+        });
+
+        const getSemana = (data)=>{
+            let semanas = '';
+
+            for (let i = 0; i < data.length; i++) {
+                semanas += data[i] + ";"
+            }
+
+            semanas = semanas.substring(0, semanas.length - 1);
+
+            return semanas;
+        }
+
+        function Reset() {
+            $("input").removeClass('is-valid is-invalid invalid');
+            $(".error").hide();
+            $('input').val("");
+            $('.select2 ').val("").trigger('change')
+            $(".disabled-on").prop("disabled", true);
+        }
+
+        $('.saveUpdade').click(function () {
+            Validation.validate('.isObrigatorioEdit')
+
+            if (!n) {
+                Swal.fire({
+                    title: 'Por favor, aguarde !',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+
+                const dias = getSemana($('#dias').val());
+
+
+                const canalEdi = {
+                    "id": parseInt($('.id-canal').html()),
+                    "designacao": $('#nomeCanal').val(),
+                    "Janelas": [{
+                        "id": parseInt($('.id-canal').html()),
+                        "designacao": $('#designacaoJanela').val(),
+                        "horaInicio": $('#horaI').val(),
+                        "horaFim": $('#horaF').val(),
+                        "diasSemana": dias
+                    }]
+                }
+
+                $.ajax({
+                    contentType: 'application/json; charset=UTF-8',
+                    url: '/api/Canals/updateCanal/' + parseInt($('.id-canal').html()) + "/" + parseInt($('.id-janela').html()),
+                    type: "post",
+                    data: JSON.stringify(canalEdi),
+                    success: function () {
+                        ReloadGrid();
+                        swal.close();
+                        Reset();
+                        $('#modal-editarCanal').modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Actualizado com Sucesso.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    },
+                    error: function (xhr, status, error) {
+                        swal.close();
+                        console.log(xhr)
+                    }
+                });
+
+            }
+
+        })
+    });
+</script>
+}

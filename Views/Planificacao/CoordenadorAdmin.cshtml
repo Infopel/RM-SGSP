@@ -1,0 +1,659 @@
+﻿@{
+    ViewData["Title"] = "Planificação - Coordenador";
+}
+
+<div class="col-md-12 mb-2 justify-content-between margin-top">
+    <h1 style="font-weight: 300;">Planificação</h1>
+    <button type="button" class="btn modal-open-plan" data-toggle="modal" hidden data-target="#modal-coordenador"></button>
+    <div class="select-Style-2" style="margin-right: 0 !important">
+        <select class="form-control-sm select2 disabled-on isOb" name="Canal" id="IdCanalF" data-message-error="Este campo é obrigatório.">
+        </select>
+    </div>
+    <button type="button" class="btn modal-canal" data-toggle="modal" hidden data-target="#modal-canalSelect"></button>
+</div>
+
+<partial name="_SchedulerGridDay" />
+
+<div class="modal fade" id="modal-coordenador" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title-spot"></h4><span style="margin: .6rem; color: #fff !important;" class="badge bg-warning" id="estadoSpan"></span>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="Designacao">Designação</label>
+                            <input type="email" class="form-control" id="Designacao" placeholder="Enter email" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Hora da Emissão</label>
+                            <input type="time" class="form-control horaDisabled" id="horaT" name="Hora da Emissão" data-message-error="Este campo é obrigatório." placeholder="HH:mm" disabled>
+                            <span class="error invalid-feedback horaT"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Data de Emissão</label>
+                            <input type="text" class="form-control" id="DataT" placeholder="Enter email" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="Duracao">Duração</label>
+                            <input type="email" class="form-control" id="Duracao" placeholder="Enter email" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="Transmissão">Estado</label>
+                            <select class="form-control isOb" name="Transmissão" data-message-error="Este campo é obrigatório." id="Estado">
+                                <option value="" disabled selected hidden>- Selecionar -</option>
+                                <option value="3">Transmitido</option>
+                                <option value="2">Não Transmitido</option>
+                            </select>
+                            <span class="error invalid-feedback Estado"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="locutor">Responsavel</label>
+                            <input type="text" class="form-control" id="locutor" placeholder="" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ifMotivoC">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Motivo</label>
+                            <textarea class="form-control disabled-on" name="Motivo" data-message-error="Este campo é obrigatório." id="Motivoo" rows="4" placeholder="Insira o motivo ..."></textarea>
+                            <span class="error invalid-feedback Motivoo"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Motivo para notificar o Cliente</label>
+                            <textarea class="form-control" name="Motivo" data-message-error="Este campo é obrigatório." id="MotivoC" rows="4" placeholder="Insira o motivo ..."></textarea>
+                            <span class="error invalid-feedback MotivoC"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ifMotivo" style="display: none">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Motivo para notificar o Cliente</label>
+                            <textarea class="form-control disabled-on" name="Motivo" data-message-error="Este campo é obrigatório." id="Motivo" rows="4" placeholder="Insira o motivo ..."></textarea>
+                            <span class="error invalid-feedback Motivo"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span id="idPlanificacao" style="display:none"></span>
+            <div class="modal-footer toHidden">
+                <button type="button" class="btn btn-primary btn-sm isDisabled salvarEstado" disabled>Salvar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm cooordenadorA-click" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-canalSelect" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="border: none;">
+                <button type="button" class="close-modal" hidden data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-10">
+                        <span style="color: red">*</span> <span style="font-style: italic;">Nota:</span> É obrigatorio selecionar um <strong> CANAL </strong> para poder visualizar a Planificação
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-10">
+                        <div class="form-group">
+                            <select class="form-control select2 disabled-on isOb" name="Canal" id="IdCanal" data-message-error="Este campo é obrigatório." style="width: 100%;">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border: none;">
+            </div>
+        </div>
+    </div>
+</div>
+<span hidden id="idUser">@User.FindFirst("IdUser").Value</span>
+<span hidden id="userName">@User.FindFirst("UserName").Value</span>
+
+<link rel='stylesheet' href='~/css/cupertino/jquery-ui.min.css' />
+<link href='~/css/fullcalendar.min.css' rel='stylesheet' />
+<link href='~/css/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+
+@section Scripts {
+    <script src="~/js/calendar.js"></script>
+    <script src='~/js/moment.min.js'></script>
+    <script src='~/js/jquery.min.js'></script>
+    <script src='~/js/fullcalendar.min.js'></script>
+    <script src='~/js/locale-all.js'></script>
+    <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
+    <script>
+        $('.select2').select2();
+
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        var motivoCliente = null;
+        $('.pendenteAuto').removeClass('isToHide');
+        $('.pendente, .transmitido, .compensado').addClass('isToHide');
+        $('.pendenteauto').text('Pendente')
+        $('.pendenteAuto>div').removeClass('icheck-orange').addClass('icheck-primary')
+
+        Validation.onChange();
+
+        var schedulerValue = null;
+        var selectedCanal = '';
+
+        $('#dataFinalEdit').val(GetTodayDate());
+        $('[data-mask]').inputmask({ "placeholder": "" });
+
+        "use strict";
+
+        var connection = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.Debug)
+            .withUrl("/planificacaoHub", {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .build();
+
+
+        $(function () {
+
+            var spots = [];
+
+            connection.on("ReceivePlanificacaoChange", function (idCanal) {
+                if (idCanal === parseInt(selectedCanal)) {
+                    loadPlanificacao(idCanal)
+                }
+            });
+
+            connection.start().then(function () {
+                console.log()
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+            Swal.fire({
+                title: 'Por favor, aguarde !',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+            });
+
+            const getIdUser = $('#idUser').html();
+            const getUserName = $('#userName').html();
+
+            const getCanals = (getIdUser, getUserName) => {
+                if (getUserName.toLocaleLowerCase().includes('admin')) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/Canals",
+                        data: "{}",
+                        success: function (data) {
+                            $('.modal-canal').click();
+
+                            swal.close();
+                            dropwonValue = '<option value="" disabled selected hidden>Selecione o Canal</option>';
+                            for (let i = 0; i < data.length; i++) {
+                                dropwonValue += '<option value="' + data[i].id + '">' + data[i].designacao + '</option>';
+                            }
+                            $("#IdCanal").html(dropwonValue);
+                            $("#IdCanalF").html(dropwonValue);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/Canals/getCanaisUserBy/" + getIdUser,
+                        data: "{}",
+                        success: function (data) {
+                            $('.modal-canal').click();
+
+                            swal.close();
+                            dropwonValue = '<option value="" disabled selected hidden>Selecione o Canal</option>';
+                            const result = data.result;
+                            for (let i = 0; i < result.length; i++) {
+                                dropwonValue += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                            }
+                            $("#IdCanal").html(dropwonValue);
+                            $("#IdCanalF").html(dropwonValue);
+                        }
+                    });
+                }
+            };
+            getCanals(getIdUser, getUserName);
+
+            $('.prev, .next').remove();
+
+            $('#calendar').fullCalendar({
+                theme: false,
+                header: {
+                    left: '',
+                    center: 'title',
+                    right: ''
+                },
+                defaultView: 'agendaDay',
+                locale: 'pt',
+                /*                        defaultView: 'agendaWeek',*/
+                weekNumbers: false,
+                navLinks: true, // can click day/week names to navigate views
+                editable: true,
+                allDaySlot: false,
+                eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) { revertFunc(); },
+                eventResize: function (event, delta, revertFunc) {
+                    revertFunc();
+                    //console.log(event.id);
+                    //console.log("Start time: " + event.start.format() + "end time: " + event.end.format());
+                },
+                events: spots,
+                slotLabelFormat: "HH:mm",
+                eventRender: function (event, element) {
+                    element.find(".fc-time").remove();
+                    element.find(".fc-title").remove();
+                    element.find(".fc-content").remove();
+                    var new_description =
+                        '<div class="fc-content"><span>' + moment(event.extendedProps.dataPlan).format("HH:mm") + '</span> '
+                        + '<span style="font-weight: 600;">' + event.title + '</span></div>'
+                        ;
+                    element.append(new_description);
+                },
+                eventClick: function (info) {
+
+                    const data = info.extendedProps;
+                    motivoCliente = null;
+
+                    reset();
+
+                    document.getElementById('title-spot').innerHTML = data.designacaProcesso + ": " + data.spot + " #" + data.code;
+                    document.getElementById('Designacao').value = data.cliente + " - " + data.designacaProcesso + ": " + data.spot
+                    document.getElementById('DataT').value = dateConvert(data.dataPlan);
+                    document.getElementById('Estado').value = '';
+                    document.getElementById('Duracao').value = data.duracao + "s";
+                    document.getElementById('idPlanificacao').innerHTML = data.id;
+                    document.getElementById('Motivo').value = data.skipMotivo;
+                    document.getElementById('Motivoo').value = data.skipMotivo;
+                    document.getElementById('locutor').value = data.userLocutor;
+
+                    if (data.dataPassagem != null)
+                        document.getElementById('horaT').value = GetDataPassagemHours(data.dataPassagem);
+                    else
+                        document.getElementById('horaT').value = GetTodayHour();
+
+                    if ($.trim(data.skipMotivo).length > 3) {
+                        $(".ifMotivo").show();
+                        $(".ifMotivoC").hide();
+                        $(".disabled-on").prop("disabled", true);
+                        $('#Estado').val('2');
+                        $("#Estado").prop("disabled", true);
+                    } else {
+                        $(".ifMotivo").hide();
+                        $(".ifMotivoC").hide();
+                        $("#Estado").prop("disabled", false);
+                        $(".disabled-on").prop("disabled", false);
+                    }
+
+                    $("input, select, textarea").removeClass('is-valid is-invalid invalid');
+                    $(".invalid-feedback").hide();
+
+                    if (data.idEstado == 4 || (data.idEstado === 3 && data.dataPassagemConfrimacao == null)) {
+                        $('#estadoSpan').removeClass('bg-warning bg-danger bg-success').addClass('bg-primary');
+                        document.getElementById('estadoSpan').innerHTML = 'Pendente';
+                        $('.toHidden').show();
+                    } else if (data.idEstado == 2 && data.parecerCoordenador == null) {
+                        $('#estadoSpan').removeClass('bg-warning bg-primary bg-success').addClass('bg-danger');
+                        document.getElementById('estadoSpan').innerHTML = 'Não Transmitido';
+                        $('.toHidden').show();
+                        $(".ifMotivo").hide();
+                        $(".ifMotivoC").show();
+                        motivoCliente = true;
+                    }
+
+                    $('.modal-open-plan').click()
+
+                }
+            });
+            $('#Estado').on('input', function () {
+                if ($(this).val() == 2) {
+                    $(".ifMotivo").show();
+                    $(".disabled-on").prop("disabled", false);
+                } else {
+                    $(".ifMotivo").hide();
+                    $(".disabled-on").prop("disabled", false);
+                }
+
+                $(".isDisabled ").prop("disabled", false);
+            })
+            const loadPlanificacao = (idCanal) => {
+                $.ajax({
+                    url: "/api/Planificacoes/listPlanificacaoCoordenadorTodayBy/" + idCanal,
+                    type: "get",
+                    success: function (data) {
+                        const a = data
+                        swal.close();
+                        schedulerValue = a;
+
+                        planToday(a);
+
+                        $('#calendar').fullCalendar('removeEvents');
+                        $('#calendar').fullCalendar('addEventSource', spots);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr)
+                    }
+                });
+            }
+
+            $("#IdCanal").on('input', () => {
+                $('.close-modal').click();
+                $('#IdCanalF').val($("#IdCanal").val()).trigger('change')
+                loadPlanificacao($("#IdCanal").val());
+                selectedCanal = $("#IdCanal").val();
+            })
+
+            $("#IdCanalF").on('input', () => {
+                loadPlanificacao($("#IdCanalF").val());
+                selectedCanal = $("#IdCanalF").val();
+            })
+
+            $("#MotivoC").on('input', () => {
+                if ($("#MotivoC").val().length > 3)
+                    $(".isDisabled").prop("disabled", false);
+                else
+                    $(".isDisabled").prop("disabled", true);
+            })
+
+
+            const planToday = (a) => {
+                spots = [];
+                //idEstado 1 = Pendente; 2 = Ñ Trans; 3 = Trans; 4 = Reagendado;
+                for (var i = 0; i < a.length; i++) {
+                    if (parseInt(a[i].estado) === 4 || (parseInt(a[i].estado) === 3 && [a].dataPassagemConfrimacao == null)) {
+                        spots.push(
+                            {
+                                title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + a[i].designacao + " - " + a[i].duracao + "s",
+                                start: a[i].prioridade,
+                                end: a[i].prioridade,
+                                extendedProps: {
+                                    id: a[i].id,
+                                    cliente: a[i].cliente,
+                                    spot: a[i].designacao,
+                                    dataInicio: a[i].dataInicio,
+                                    dataPassagem: a[i].dataPassagem,
+                                    dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                    dataFim: a[i].dataFim,
+                                    duracao: a[i].duracao,
+                                    code: a[i].code,
+                                    skipMotivo: a[i].skipMotivo,
+                                    idTipo: a[i].idTipo,
+                                    dataPlan: a[i].dataPlanificacao,
+                                    designacaProcesso: a[i].tipoProcesso,
+                                    idEstado: 4,
+                                    userCoordenador: a[i].userCoordenador,
+                                    userLocutor: a[i].userLocutor,
+                                    coordenadorParecer: a[i].coordenadorParecer,
+                                    dataCreateProcesso: a[i].dataCreateProcesso,
+                                    idCanal: a[i].idCanal
+                                },
+                                backgroundColor: '#007bff',
+                                borderColor: '#007bff'
+                            },
+                        )
+
+                    } else if (parseInt(a[i].estado) === 2 && a[i].userCoordenador === null) {
+
+                        spots.push(
+                            {
+                                title: a[i].cliente + " - " + a[i].tipoProcesso + ": " + a[i].designacao + " - " + a[i].duracao + "s",
+                                start: a[i].prioridade,
+                                end: a[i].prioridade,
+                                extendedProps: {
+                                    id: a[i].id,
+                                    cliente: a[i].cliente,
+                                    spot: a[i].designacao,
+                                    dataInicio: a[i].dataInicio,
+                                    dataPassagem: a[i].dataPassagem,
+                                    dataPassagemConfrimacao: a[i].dataPassagemConfrimacao,
+                                    dataFim: a[i].dataFim,
+                                    duracao: a[i].duracao,
+                                    code: a[i].code,
+                                    skipMotivo: a[i].skipMotivo,
+                                    idTipo: a[i].idTipo,
+                                    dataPlan: a[i].dataPlanificacao,
+                                    designacaProcesso: a[i].tipoProcesso,
+                                    idEstado: a[i].estado,
+                                    userCoordenador: a[i].userCoordenador,
+                                    userLocutor: a[i].userLocutor,
+                                    dataCreateProcesso: a[i].dataCreateProcesso,
+                                    coordenadorParecer: a[i].coordenadorParecer,
+                                    idCanal: a[i].idCanal
+                                },
+                                backgroundColor: '#dc3545',
+                                borderColor: '#dc3545'
+                            },
+                        )
+                    }
+                }
+            }
+
+            function dateConvert(data) {
+                let date = new Date(data);
+                let d = date.getDate();
+                let m = date.getMonth() + 1;
+                let y = date.getFullYear();
+                return y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+            }
+
+            function reset() {
+                $('#Estado').val('').trigger('change');
+                $('#Estado').removeClass('is-valid is-invalid invalid');
+                $("input, textarea").removeClass('is-valid is-invalid invalid');
+                $(".invalid-feedback").hide();
+                $('#MotivoC').val('');
+                $(".isDisabled").prop("disabled", true);
+            }
+
+            function GetDataPassagemHours(date) {
+
+                let d = new Date(date)
+
+                let hour = d.getHours();
+                let min = d.getMinutes();
+
+                if (min < 10)
+                    min = "0" + min;
+
+                if (hour < 10)
+                    hour = "0" + hour;
+
+                return hour + ":" + min;
+
+            }
+
+            $('.salvarEstado').on('click', function () {
+                Validation.validate('.isOb');
+                if (!n) {
+                    if ($('#Motivo').is(':visible') && $('#Motivo').val().length > 1) {
+                        Swal.fire({
+                            title: 'Por favor, aguarde !',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading()
+                            },
+                        });
+                        saveParecer();
+                    } else {
+                        if (!$('#Motivo').is(':visible')) {
+                            saveParecer();
+                        } else {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Por favor, preencha o motivo, para poder concluír o processo.'
+                            })
+                        }
+                    }
+                }
+            })
+
+            const saveParecer = () => {
+
+                const mot = $('#Motivo').val() ? $('#Motivo').val() : "N/A";
+                if (motivoCliente) {
+                    $.ajax({
+                        contentType: 'application/json; charset=UTF-8',
+                        url: "/api/Planificacoes/parecerCoordenadorNotificacao/" + parseInt($('#idPlanificacao').html()),
+                        type: "post",
+                        data: JSON.stringify({ "parecerCoordenador": $('#MotivoC').val() }),
+                        success: function (data) {
+                            swal.close();
+                            planToday(data);
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Motivo da Transmissão salva com Sucesso.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+
+                            $('#calendar').fullCalendar('removeEvents');
+                            $('#calendar').fullCalendar('addEventSource', spots)
+
+
+                            $('.cooordenadorA-click').click();
+                            reset();
+
+                            connection.invoke("PlanificacaoChange", parseInt(selectedCanal)).catch(function (err) {
+                                return console.error(err.toString());
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            swal.close();
+                            console.log(xhr)
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        contentType: 'application/json; charset=UTF-8',
+                        url: "/api/Planificacoes/parecerCoordenador/" + parseInt($('#idPlanificacao').html()) + "/" + $('#Estado').val(),
+                        type: "post",
+                        data: JSON.stringify({ "parecerCoordenador": mot }),
+                        success: function (data) {
+                            swal.close();
+                            planToday(data);
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Estado da Transmissão salva com Sucesso.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+
+                            $('#calendar').fullCalendar('removeEvents');
+                            $('#calendar').fullCalendar('addEventSource', spots)
+
+                            $('.cooordenadorA-click').click();
+                            reset();
+
+                            connection.invoke("PlanificacaoChange", parseInt(selectedCanal)).catch(function (err) {
+                                return console.error(err.toString());
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            swal.close();
+                            console.log(xhr)
+                        }
+                    });
+                }
+
+            }
+
+
+            $('.schedulerCheck').click(function () {
+                var checkedValue = [];
+                $('.schedulerCheck:checked').each(function (i) {
+                    checkedValue[i] = $(this).val();
+                });
+                filterPlan(checkedValue);
+            });
+
+            const filterPlan = (data) => {
+                let plano = null;
+
+                plano = spots;
+
+                const filter = data;
+                let newEvent = [];
+                for (let i = 0; i < filter.length; i++) {
+                    const valueclicked = filter[i];
+                    for (let as = 0; as < plano.length; as++) {
+                        if (valueclicked == plano[as].extendedProps.idEstado)
+                            newEvent.push(
+                                {
+                                    title: plano[as].title,
+                                    start: plano[as].start,
+                                    end: plano[as].end,
+                                    extendedProps: {
+                                        id: plano[as].extendedProps.id,
+                                        cliente: plano[as].extendedProps.cliente,
+                                        spot: plano[as].extendedProps.spot,
+                                        dataInicio: plano[as].extendedProps.dataInicio,
+                                        dataPassagem: plano[as].extendedProps.dataPassagem,
+                                        dataPassagemConfrimacao: plano[as].extendedProps.dataPassagemConfrimacao,
+                                        dataFim: plano[as].extendedProps.dataFim,
+                                        duracao: plano[as].extendedProps.duracao,
+                                        code: plano[as].extendedProps.code,
+                                        skipMotivo: plano[as].extendedProps.skipMotivo,
+                                        idTipo: plano[as].extendedProps.idTipo,
+                                        dataPlan: plano[as].extendedProps.dataPlan,
+                                        designacaProcesso: plano[as].extendedProps.designacaProcesso,
+                                        idEstado: plano[as].extendedProps.idEstado,
+                                        userCoordenador: plano[as].extendedProps.userCoordenador,
+                                        coordenadorParecer: plano[as].extendedProps.coordenadorParecer,
+                                        userLocutor: plano[as].extendedProps.userLocutor,
+                                        idCanal: plano[as].extendedProps.idCanal
+                                    },
+                                    backgroundColor: plano[as].backgroundColor,
+                                    borderColor: plano[as].borderColor
+                                },
+                            )
+                    }
+                }
+
+                $('#calendar').fullCalendar('removeEvents');
+                $('#calendar').fullCalendar('addEventSource', newEvent);
+            }
+        })
+    </script>
+}

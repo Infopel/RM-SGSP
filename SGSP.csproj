@@ -1,0 +1,121 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>aspnet-SGSP-EC7F536E-35A6-4557-8BEC-00B0B8BE96B9</UserSecretsId>
+    <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+    <GenerateTargetFrameworkAttribute>true</GenerateTargetFrameworkAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="EmailService\obj\**" />
+    <Compile Remove="RDLCDesign\**" />
+    <Compile Remove="Views\Locutor\**" />
+    <Content Remove="EmailService\obj\**" />
+    <Content Remove="RDLCDesign\**" />
+    <Content Remove="Views\Locutor\**" />
+    <EmbeddedResource Remove="EmailService\obj\**" />
+    <EmbeddedResource Remove="RDLCDesign\**" />
+    <EmbeddedResource Remove="Views\Locutor\**" />
+    <None Remove="EmailService\obj\**" />
+    <None Remove="RDLCDesign\**" />
+    <None Remove="Views\Locutor\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Reports\CertificadoEmissao.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Reports\CertificadoEmissao.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="SGSP.sln" />
+    <None Include="Views\Anuncios\Create.cshtml" />
+    <None Include="Views\Anuncios\Index.cshtml" />
+    <None Include="Views\Canals\Create.cshtml" />
+    <None Include="Views\Canals\CreateJanelas.cshtml" />
+    <None Include="Views\Canals\Index.cshtml" />
+    <None Include="Views\Clientes\Index.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Planificacao\Index.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_BrandLogo.cshtml" />
+    <None Include="Views\Shared\_Breadcrumb.cshtml" />
+    <None Include="Views\Shared\_Calendar.cshtml" />
+    <None Include="Views\Shared\_ControlSidebar.cshtml" />
+    <None Include="Views\Shared\_Footer.cshtml" />
+    <None Include="Views\Shared\_IconCanal.cshtml" />
+    <None Include="Views\Shared\_IconClientes.cshtml" />
+    <None Include="Views\Shared\_IconPlanificacao.cshtml" />
+    <None Include="Views\Shared\_IconRelatorio.cshtml" />
+    <None Include="Views\Shared\_IconSpots.cshtml" />
+    <None Include="Views\Shared\_IconUtilizador.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_LoginPartial.cshtml" />
+    <None Include="Views\Shared\_MainSidebarContainer.cshtml" />
+    <None Include="Views\Shared\_Message.cshtml" />
+    <None Include="Views\Shared\_MessagesDropdownMenu.cshtml" />
+    <None Include="Views\Shared\_Navbar.cshtml" />
+    <None Include="Views\Shared\_NavbarLeft.cshtml" />
+    <None Include="Views\Shared\_NavbarRight.cshtml" />
+    <None Include="Views\Shared\_NotificationsDropdownMenu.cshtml" />
+    <None Include="Views\Shared\_Preloader.cshtml" />
+    <None Include="Views\Shared\_Scheduler.cshtml" />
+    <None Include="Views\Shared\_SchedulerGridDay.cshtml" />
+    <None Include="Views\Shared\_Scripts.cshtml" />
+    <None Include="Views\Shared\_Sidebar.cshtml" />
+    <None Include="Views\Shared\_SidebarMenu.cshtml" />
+    <None Include="Views\Shared\_SidebarSearchForm.cshtml" />
+    <None Include="Views\Shared\_SidebarUserPanel.cshtml" />
+    <None Include="Views\Shared\_Styles.cshtml" />
+    <None Include="Views\Shared\_UserLayout.cshtml" />
+    <None Include="Views\Shared\_UserPanel.cshtml" />
+    <None Include="Views\Shared\_UserScripts.cshtml" />
+    <None Include="Views\Shared\_UserStyles.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\Spots\Create.cshtml" />
+    <None Include="Views\Spots\Index.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="5.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.14.0" />
+    <PackageReference Include="Select.HtmlToPdf.NetCore" Version="21.2.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ReportsDataSet\DataSetReport.Designer.cs">
+      <DependentUpon>DataSetReport.xsd</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>

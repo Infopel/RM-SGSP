@@ -1,0 +1,389 @@
+﻿@{
+    ViewData["Title"] = "SGSP - Rádio de Moçambique | Clientes";
+}
+
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Clientes</h1>
+</div>
+<div class="col-md-12 mb-4">
+    <a class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#modal-addCliente"><i class="fas fa-plus"></i> Adicionar Cliente</a>
+</div>
+<div class="modal fade" id="modal-addCliente" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Adicionar Cliente</h4>
+                <button type="button" class="close clean-me" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Nome</label>
+                            <input type="text" class="form-control isObrigatorio" id="inputNome" name="Nome" data-message-error="Este campo é obrigatório." placeholder="Nome completo">
+                            <span class="error invalid-feedback inputNome"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>NUIT</label>
+                            <input type="text" class="form-control isObrigatorio" id="inputNUIT" name="NUIT" data-message-error="Este campo é obrigatório." data-inputmask='"mask": "999999999"' data-mask placeholder="ex. 123456789">
+                            <span class="error invalid-feedback inputNUIT"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control isObrigatorio" id="inputEmail" name="Email" placeholder="Enter email">
+                            <span class="error invalid-feedback inputEmail"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="text" class="form-control isObrigatorio" id="inputTelefone" name="Telefone" data-message-error="Este campo é obrigatório." data-inputmask='"mask": "+999 99 999 9999"' data-mask placeholder="">
+                            <span class="error invalid-feedback inputTelefone"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm saved disabled-on" disabled>Salvar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm clean-me" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12 table-responsive">
+    <div class="card">
+        <div class="card-body">
+            <table id="clientesTable" class="table table-sm table-hover dataTable dtr-inline">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Nuit</th>
+                        <th>Telefone</th>
+                        <th>Email</th>
+                        <th>Data de Criação</th>
+                        <th>N.º spot</th>
+                        <th class="text-center"><i class="fas fa-ellipsis-v"></i></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-editarCliente" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Cliente</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Nome</label>
+                            <input type="text" class="form-control isObrigatorioEdit" id="inputNomeEdit" name="Nome" data-message-error="Este campo é obrigatório." placeholder="Enter email">
+                            <span class="error invalid-feedback inputNomeEdit"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>NUIT</label>
+                            <input type="text" class="form-control isObrigatorioEdit" id="inputNuitEdit" name="NUIT" data-message-error="Este campo é obrigatório." data-inputmask='"mask": "999999999"' data-mask />
+                            <span class="error invalid-feedback inputNuitEdit"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control isObrigatorioEdit" name="Email" id="inputEmailEdit" />
+                            <span class="error invalid-feedback inputEmailEdit"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="text" class="form-control isObrigatorioEdit" id="inputTelEdit" name="Telefone" data-message-error="Este campo é obrigatório." data-inputmask='"mask": "+999 99 999 9999"' data-mask />
+                            <span class="error invalid-feedback inputTelEdit"></span>
+                        </div>
+                    </div>
+                </div>
+                <span class="id-cliente" hidden="hidden"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm saveUpdade disabled-on" disabled>Salvar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+@section scripts{
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/plugins/jszip/jszip.min.js"></script>
+    <script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+
+    <script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('[data-mask]').inputmask({ "placeholder": "" });
+
+            $('#clientesTable').DataTable({
+                "ajax": {
+                    "url": "api/Clientes/listCliente",
+                    "type": "Get"
+                },
+              
+                columns: [
+                    { data: "designacao" },
+                    { data: "nuit" },
+                    { data: "telefone" },
+                    { data: "eMail" },
+                    {
+                        data: "dataCreate", render: function (data, type, row, meta) {
+                            let date = new Date(data);
+                            let d = date.getDate();
+                            let m = date.getMonth() + 1;
+                            let y = date.getFullYear();
+                            return (d <= 9 ? '0' + d : d) + '/' + (m <= 9 ? '0' + m : m) + '/' + y;
+                        }
+                    }
+                    ,
+                    { data: "nSpots" },
+                    { data: "action" }
+                ],
+                buttons: [
+                    'colvis',
+                    'excel',
+                    'print'
+                ],
+                "oLanguage": {
+
+                    "sSearch": "Pesquisar Cliente:"
+
+                }
+
+            });
+            $('#clientesTable tbody').off('click');
+            $('#clientesTable').on('click', '.editarr', function () {
+
+                const idV = $(this).attr("data-id");
+                const nomeV = $(this).attr("data-designacao");
+                const nuitV = $(this).attr("data-nuit");
+                const telV = $(this).attr("data-telefone");
+                const emailV = $(this).attr("data-email");
+
+                $("#inputNomeEdit").val(nomeV)
+                $("#inputNuitEdit").val(nuitV)
+                $("#inputEmailEdit").val(emailV)
+                $("#inputTelEdit").val(telV)
+                $(".id-cliente").text(idV)
+
+                $('#modal-editarCliente').modal('show');
+
+            });
+            $('.clean-me').click(function () {
+                $('#inputNome, #inputNUIT, #inputEmail, #inputTelefone').val('');
+                $("input").removeClass('is-valid is-invalid invalid');
+            })
+
+            $('#inputNomeEdit, #inputNuitEdit, #inputEmailEdit, #inputTel, #inputNome, #inputNUIT, #inputEmail, #inputTelefone').on('input', function () {
+                $(".disabled-on").prop("disabled", false);
+            })
+
+            $('#clientesTable').on('click', '.destivarr', function () {
+
+
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-primary',
+                        cancelButton: 'btn btn-danger mg-1'
+                    },
+                    buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: 'Tem certeza, que deseja remover o cliente?',
+                    text: "Você não poderá reverter esta operação!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, remover!',
+                    cancelButtonText: 'Não, cancelar!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Por favor, aguarde !',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading()
+                            },
+                        });
+                        $.ajax({
+                            url: "/api/Clientes/disableCliente/" + parseInt($(this).attr("data-id")),
+                            type: "post",
+                            success: function () {
+                                swal.close();
+                                ReloadGrid();
+                                swalWithBootstrapButtons.fire(
+                                    'Removido!',
+                                    'Seu cliente foi removido :).',
+                                    'success'
+                                )
+                            },
+                            error: function (xhr, status, error) {
+                                console.log(xhr)
+                            }
+                        });
+
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Cancelado',
+                            'Sua operação foi abortada :)',
+                            'error'
+                        )
+                    }
+                })
+
+            });
+            Validation.onChange();
+            function ReloadGrid() {
+                $('#clientesTable').DataTable().clear();
+                $('#clientesTable').DataTable().ajax.reload();
+            }
+
+            function Reset() {
+                $("input").removeClass('is-valid is-invalid invalid');
+                $(".error").hide();
+                $('input').val("");
+                $(".disabled-on").prop("disabled", true);
+            }
+
+            $('.saved').click(function () {
+                Validation.validate('.isObrigatorio');
+
+                if (!n) {
+                    Swal.fire({
+                        title: 'Por favor, aguarde !',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+                    const cliente = {
+                        Designacao: $('#inputNome').val(),
+                        Nuit: $('#inputNUIT').val(),
+                        Telefone: $('#inputTelefone').val(),
+                        EMail: $('#inputEmail').val()
+                    }
+                    $.post('api/Clientes', { cliente: cliente })
+                        .done(function (data) {
+                            swal.close();
+                            if (parseInt(data.d) == -1) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Este cliente já encontra-se cadastrado, por favor tente outro.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            else {
+                                $('#modal-addCliente').modal('hide');
+                                Reset();
+                                ReloadGrid();
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Cliente cadastrato com Sucesso.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+
+                        })
+                }
+
+            })
+
+            $('.saveUpdade').click(function () {
+                Validation.validate('.isObrigatorioEdit')
+
+                if (!n) {
+                    Swal.fire({
+                        title: 'Por favor, aguarde !',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+
+                    const clienteEdi = {
+                        "id": parseInt($('.id-cliente').html()),
+                        "designacao": $('#inputNomeEdit').val(),
+                        "nuit": $('#inputNuitEdit').val(),
+                        "telefone": $('#inputTelEdit').val() ? $('#inputTelEdit').val() : "",
+                        "eMail": $('#inputEmailEdit').val()
+                    }
+                    $.ajax({
+                        contentType: 'application/json; charset=UTF-8',
+                        url: '/api/Clientes/updateCliente/' + parseInt($('.id-cliente').html()),
+                        type: "post",
+                        data: JSON.stringify(clienteEdi),
+                        success: function (result, status, xhr) {
+                            swal.close();
+                            $('#modal-editarCliente').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Cliente actualizado com Sucesso.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            ReloadGrid();
+                        },
+                        error: function (xhr, status, error) {
+                            swal.close();
+                            console.log(xhr)
+                        }
+                    });
+
+                }
+
+            })
+
+        });
+    </script>
+}

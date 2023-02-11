@@ -1,0 +1,54 @@
+﻿body {
+    font-family: Arial, sans-serif;
+
+}
+
+@media print{
+    @page {
+        margin:0 -6cm
+    }
+    html {
+        margin:0 6cm
+    }
+}
+
+h2.page-header {
+    text-align: center;
+    padding-top: 0.8rem;
+}
+
+h2 > img{
+    width: 200px;
+}
+
+p.page-header {
+    text-align: center;
+    font-weight: bold;
+}
+p > span.nomeCampanha, p > span.clienteNome {
+    font-weight: bold;
+}
+
+table, th, td {
+    border: 2px solid #ddd;
+    border-collapse: collapse;
+}
+table {
+    width: 100%;
+}
+
+div.assinatura {
+    text-align: center;
+}
+
+span.line {
+    border: 1px solid #000;
+    width: 250px;
+    display: block;
+    margin: auto;
+}
+
+table tr td:nth-child(1){
+    text-align: center;
+    font-weight: bold;
+}

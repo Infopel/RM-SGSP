@@ -1,0 +1,374 @@
+﻿@{
+    ViewData["Title"] = "SGSP - Rádio de Moçambique | Canal - Cadastro de Janela";
+}
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Cadastro de Janela de Transmissão</h1>
+    @*<div>
+            <a asp-action="Index">Back to List</a>
+        </div>*@
+</div>
+
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Canal</label>
+                        <select class="form-control select2 select2-blue" id="canal" name="Canal" data-message-error="Este campo é obrigatório." data-dropdown-css-class="select2-blue" style="width: 100%;">
+                        </select>
+                        <span class="error invalid-feedback canal"></span>
+                    </div>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Janelas de Transmissão</h3>
+        </div>
+        <div class="card-body table-responsive">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="control-label">Designação</label>
+                        <select class="form-control janelas select2-blue isToValida disabled-on" id="designacaoJanela" name="Designação da Janela" data-message-error="Este campo é obrigatório." data-dropdown-css-class="select2-blue" style="width: 100%;" disabled>
+                            <option value="" disabled selected hidden>Digite a designação da Janela</option>
+                        </select>
+                        <span class="error invalid-feedback designacaoJanela"></span>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">Dias da Semana</label>
+                        <div class="select2-blue">
+                            <select class="select2 isToValida disabled-on" id="dias" multiple="multiple" data-dropdown-css-class="select2-blue" data-message-error="Este campo é obrigatório." data-placeholder="Selecionar dias da semana"
+                                    style="width: 100%;" disabled>
+                                <option value="Dom">Domingo</option>
+                                <option value="Seg">Segunda-Feira</option>
+                                <option value="Terc">Terça-Feira</option>
+                                <option value="Qua">Quarta-Feira</option>
+                                <option value="Qui">Quinta-Feira</option>
+                                <option value="Sex">Sexta-Feira</option>
+                                <option value="Sáb">Sábado</option>
+                            </select>
+                        </div>
+                        <span class="error invalid-feedback dias"></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label">Hora de Início</label>
+                        <input type="time" class="form-control isToValida disabled-on" name="Hora de Início" id="horaI" data-message-error="Este campo é obrigatório." disabled />
+                        <span class="error invalid-feedback horaI"></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label">Hora de Término</label>
+                        <input type="time" class="form-control isToValida hDisabled-on" name="Hora de Término" id="horaF" data-message-error="Este campo é obrigatório." disabled />
+                        <span class="error invalid-feedback horaF"></span>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="fomr-group">
+                        <label class="control-label">&nbsp;</label>
+                        <button type="button" class="form-control btn btn-primary btn-sm addJanela isTodisable disabled-on" disabled><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table text-nowrap table-sm" id="tableJanelas">
+                        <thead>
+                            <tr>
+                                <th class="col-sm-3">Designação</th>
+                                <th class="col-sm-2">Dias da Semana</th>
+                                <th class="col-sm-2">Hora de Início</th>
+                                <th class="col-sm-2">Hora de Fim</th>
+                                <th class="col-sm-2">Canal</th>
+                                <th class="col-sm-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyJanelas">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="form-group">
+                <button class="btn btn-primary float-right saveJanela isDisabled-on" disabled>Cadastrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+@section Scripts {
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
+
+    <script>
+        $('.select2').select2()
+
+        $('.janelas').select2({
+            tags: true
+        })
+
+        var janelas = [];
+        var dropwonValue = '';
+        var dropwonValueJanelas = '';
+        var arrayA = '';
+
+        $('.addJanela').on('click', function () {
+            Validation.validate('.isToValida');
+
+            if (!n) {
+                const designacao = $('#designacaoJanela').val();
+                const horaI = $('#horaI').val();
+                const horaF = $('#horaF').val();
+                const dias = $('#dias').val();
+                const idJanela = janelas.length + 1;
+                const canal = $('#canal').select2('data')[0].text;
+                let semanas = '';
+
+                for (let i = 0; i < dias.length; i++) {
+                    semanas += dias[i] + ";"
+                }
+
+                semanas = semanas.substring(0, semanas.length - 1);
+
+                janelas.push({ 'id': idJanela, 'designacao': designacao, 'horaInicio': horaI, 'horaFim': horaF, 'diasSemana': semanas, 'estado': 'activo' })
+                insertTr(idJanela, designacao, semanas, horaI, horaF, canal);
+                removeTr();
+                reset();
+                const tableCount = document.getElementById("tableJanelas").rows.length;
+                if (tableCount > 1)
+                    $(".isDisabled-on").prop("disabled", false);
+            }
+        })
+
+        $('#canal').on('input', () => {
+            $(".disabled-on").prop("disabled", false);
+
+            dropwonValueJanelas = '<option value="" disabled selected hidden>Digite a designação da Janela</option>';
+
+            for (let i in arrayA) {
+                if (parseInt(arrayA[i].id) === parseInt($('#canal').val())) {
+                    for (let a in arrayA[i].janelas) {
+                        dropwonValueJanelas += '<option disabled="disabled" value="' + arrayA[i].janelas[a].id + '">' + arrayA[i].janelas[a].designacao + '</option>';
+                    }
+                    break;
+                }
+            }
+            $("#designacaoJanela").html(dropwonValueJanelas);
+            tabRemove();
+        })
+
+        $('#horaI').on('input', () => {
+            $(".hDisabled-on").prop("disabled", false);
+
+            if ($('#horaF').val().length > 0) {
+                if ($('#horaI').val() > $('#horaF').val() || $('#horaI').val() == $('#horaF').val()) {
+                    $('#horaI').removeClass('is-valid').addClass('is-invalid invalid');
+                    $('.horaI').html("Uma " + $('#horaI').attr('name') + " válido é obrigatório.")
+                } else {
+                    $('.horaI').hide();
+                    $('#horaI').removeClass('is-invalid invalid').addClass('is-valid');
+                }
+            }
+        })
+
+        $('#horaF').on('input', () => {
+
+            if ($('#horaI').val().length > 0) {
+                if ($('#horaF').val() < $('#horaI').val() || $('#horaF').val() == $('#horaI').val()) {
+                    $('#horaF').removeClass('is-valid').addClass('is-invalid invalid');
+                    $('.horaF').html("Uma " + $('#horaF').attr('name') + " válido é obrigatório.")
+                } else {
+                    $('.horaF').hide();
+                    $('#horaF').removeClass('is-invalid invalid').addClass('is-valid');
+                }
+            }
+        })
+
+        const insertTr = function (id, designacao, dias, horaI, horaF, canal) {
+            $('#tableJanelas tbody:first').append('<tr itemid="' + id + '">'
+                + '<td>' + designacao + '</td> '
+                + '<td>' + dias + '</td> '
+                + '<td>' + horaI + '</td>'
+                + '<td>' + horaF + '</td> '
+                + '<td>' + canal + '</td> '
+                + '<td><div class="btn-group-sm float-right">'
+                + '<button type="button" class="btn btn-danger btn-check-remove btn-sm" data-id="' + id + '"> <i class="fas fa-trash-alt"></i></button>'
+                + '</div></td> '
+                + '</tr>');
+        };
+
+        const removeTr = function () {
+            $(".btn-check-remove").on("click", function (e) {
+                var idT = $(this).attr('data-id');
+                var tRow = $(this).parent().parent().parent();
+
+                Swal.fire({
+                    title: 'Deseja Remover?',
+                    text: "Você não será capaz de reverter isso!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, Remover!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        tRow.remove();
+                        arrayRemove(idT);
+                        Swal.fire(
+                            'Removido!',
+                            'Sua Janela foi removida da lista com sucesso.',
+                            'success'
+                        )
+                        const tableCount = document.getElementById("tableJanelas").rows.length;
+                        if (tableCount < 2)
+                            $(".isDisabled-on").prop("disabled", true);
+                    }
+                })
+
+            });
+        };
+
+        const arrayRemove = function (id) {
+            for (let i in janelas) {
+                if (parseInt(janelas[i].id) === parseInt(id)) {
+                    janelas[i].estado = 'inactivo';
+                    break;
+                }
+            }
+        };
+
+        const tabRemove = () => {
+            let inTD = document.getElementById("tableJanelas").rows.length;
+            if (inTD > 1) {
+                janelas = [];
+                $("#tbodyJanelas tr").remove();
+                $(".isDisabled-on").prop("disabled", true);
+            }
+        }
+
+        const reset = () => {
+            $('input[type=time]').val('');
+            $(".hDisabled-on").prop("disabled", true);
+            $("#dias, #designacaoJanela").val('').trigger("change");
+            $('.isToValida').removeClass("is-invalid invalid is-valid");
+            $('.error').hide();
+        }
+
+        const resetAll = () => {
+            reset();
+            tabRemove();
+            $("#canal").val('').trigger("change");
+            $(".isDisabled-on").prop("disabled", true);
+        }
+
+        $(document).ready(function () {
+            const getCanals = () => {
+                Swal.fire({
+                    title: 'Por favor, aguarde !',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                $.ajax({
+                    type: "GET",
+                    url: "/api/Canals",
+                    data: "{}",
+                    success: function (data) {
+                        swal.close();
+                        arrayA = data;
+                        dropwonValue = '<option value="" disabled selected hidden>Selecione a Canal</option>';
+                        for (let i = 0; i < data.length; i++) {
+                            dropwonValue += '<option value="' + data[i].id + '">' + data[i].designacao + '</option>';
+                        }
+                        $("#canal").html(dropwonValue);
+                    }
+                });
+            };
+            getCanals();
+        });
+
+        $('.saveJanela').click(function () {
+                let tableCount = document.getElementById("tableJanelas").rows.length;
+
+                if (tableCount > 1) {
+                    Swal.fire({
+                        title: 'Por favor, aguarde !',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+
+                    let listJ = []
+
+                    for (let ap in janelas) {
+                        let j = janelas[ap];
+                        if (j.estado == 'activo') {
+                            listJ.push({ "Designacao": j.designacao, 'HoraInicio': j.horaInicio + ":00", "HoraFim": j.horaFim + ":00", 'DiasSemana': j.diasSemana, 'IdCanal': parseInt($('#canal').val()) })
+                        }
+                    }
+
+                    $.post('/api/Janelas', { janelas: listJ })
+                        .done(function (data) {
+                            swal.close();
+                            //if (parseInt(data.d) == -1) {
+                            //    Swal.fire({
+                            //        icon: 'error',
+                            //        title: 'Não foi possivel concluir o cadastro, código do Canal já encontra-se em uso.',
+                            //        showConfirmButton: false,
+                            //        timer: 1500
+                            //    })
+                            //}
+                            //else {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Janela(s) de Transmissão cadastrada(s) com Sucesso.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                                resetAll();
+/*                            }*/
+                        }).fail(function (e) {
+                            swal.close();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Ocorreu um erro, Contacte a Administração.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        })
+                } else {
+                    swal.close();
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Por favor, preencha a Janela de Transmissão do Canal, para poder concluír o cadastro.'
+                    })
+                }
+        })
+
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

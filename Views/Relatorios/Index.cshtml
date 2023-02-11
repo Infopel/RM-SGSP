@@ -1,0 +1,295 @@
+﻿@{
+    ViewData["Title"] = "SGSP - Rádio de Moçambique | Relatórios";
+}
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Relatórios</h1>
+</div>
+
+<div class="col-md-12" style="z-index: 1;">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label">Cliente</label>
+                        <div class="input-group">
+                            <select name="Cliente" class="form-control" id="clienteSelect2" data-message-error="Este campo é obrigatório.">
+                            </select>
+                            <span class="error invalid-feedback clienteSelect2"></span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label"> Canal</label>
+                            <select class="form-control select2 is-request" name="Canal" id="IdCanal" data-message-error="Este campo é obrigatório." style="width: 100%;">
+                                <option value="" disabled selected hidden>Selecione o Canal</option>
+                            </select>
+                            <span class="error invalid-feedback IdCanal"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="control-label"> Tipo</label>
+                            <select class="form-control select2 is-request" name="Tipo de Campanha" id="tipoProcesso" data-message-error="Este campo é obrigatório." style="width: 100%;">
+                                <option value="" disabled selected hidden>Selecione o Tipo</option>
+                                <option value="1">Spot</option>
+                                <option value="2">Anúncio</option>
+                            </select>
+                            <span class="error invalid-feedback tipoProcesso"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="fomr-group">
+                            <label class="control-label">Período</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control disabled-on is-request" id="dateInicial" name="Data de Início" data-message-error="Este campo é obrigatório." placeholder="dd/mm/yyyy" />
+                                <span class="input-group-append">
+                                    <span class="btn btn-primary">a</span>
+                                </span>
+                                <input type="date" class="form-control is-request" style="text-align: end" name="Data de Término" data-message-error="Este campo é obrigatório." id="dateFinal" placeholder="dd/mm/yyyy" disabled />
+                            </div>
+                            <span class="error invalid-feedback dateFinal dateInicial"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="fomr-group">
+                            <label class="control-label">&nbsp;</label>
+                            <button type="button" class="form-control btn btn-primary btn-sm gerarRelatorio ">Gerar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+<div class="col-md-10 offset-md-1 mt-20 table-responsive" hidden>
+    <div class="card">
+        <div class="card-body">
+            <table id="relatoriosTable" class="table table-sm table-hover dataTable dtr-inline">
+                <thead>
+                    <tr>
+                        <th class="col-sm-3">Cliente</th>
+                        <th class="col-sm-3">CANAL</th>
+                        <th class="col-sm-3">PERÍODO</th>
+                        <th class="text-center col-sm-2">DATA DE EMISSÃO</th>
+                        <th class="text-center col-sm-1"><i class="fas fa-ellipsis-v"></i></th>
+
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<span hidden id="roleUser">@User.FindFirst("Role").Value</span>
+<span hidden id="canalUser">@User.FindFirst("idCanal").Value</span>
+
+<iframe name="print_frame" id="print_frame" frameborder="0" scrolling="no" hidden></iframe>
+
+<link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+@section Scripts {
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/plugins/jszip/jszip.min.js"></script>
+    <script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+
+    <script>
+        $('.select2').select2();
+        $('[data-mask]').inputmask({ "placeholder": "" });
+        var idCliente = ''
+        Validation.onChange();
+        
+        $(function () {
+            const getRoleUser = $('#roleUser').html();
+            const getCanalUser = $('#canalUser').html();
+
+            const getCanals = () => {
+                Swal.fire({
+                    title: 'Por favor, aguarde !',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                $.ajax({
+                    type: "GET",
+                    url: "/api/Canals",
+                    data: "{}",
+                    success: function (data) {
+                        $('.modal-canal').click();
+
+                        swal.close();
+                        dropwonValue = '<option value="" disabled selected hidden>Selecione o Canal</option>';
+                        for (let i = 0; i < data.length; i++) {
+                            dropwonValue += '<option value="' + data[i].id + '">' + data[i].designacao + '</option>';
+                        }
+                        $("#IdCanal").html(dropwonValue);
+
+                        if (getRoleUser !== 'Administrador') {
+                            $("#IdCanal").val(getCanalUser).trigger('change')
+                            $("#IdCanal").prop("disabled", true);
+                        } else
+                            $("#IdCanal").prop("disabled", false);
+                    }
+                });
+            };
+            getCanals();
+
+            $('#dateInicial').prop('min', '');
+            $('#dateInicial').on('input', function () {
+
+                $('#dateFinal').prop('min', $(this).val())
+                $("#dateFinal").prop("disabled", false);
+                $("#dateFinal").prop("disabled", false);
+            })
+
+            $('#dateFinal').on('input', function () {
+                if ($('#dateInicial').val() !== '') {
+                    $('#dataPlan').prop('max', $(this).val())
+                    $("#dataPlan").prop("disabled", false);
+                }
+                if ($('#dateInicial').val() == $(this).val()) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Período escolhido inválido. Por favor escolha um período valido.'
+                    })
+                    $('#dateInicial, #dateFinal').removeClass('is-valid');
+                    $('#dateInicial, #dateFinal').addClass('is-invalid invalid');
+                }
+            })
+
+            $('#dateFinal, #dateInicial').prop('max', GetTodayDate())
+
+            const reset = () => {
+                $('input').val('').trigger('change');
+                $('#IdCanal, #tipoProcesso, #clienteSelect2').val('').trigger('change');
+                $("input, select").removeClass('is-valid is-invalid invalid');
+                $(".invalid-feedback").hide();
+                $("#dateFinal ").prop("disabled", true);
+                idCliente = null;
+            };
+
+            $('.gerarRelatorio').click(() => {
+                Validation.validate('.is-request');
+                if (!n) {
+                    if ($('#dateInicial').val() == $('#dateFinal').val()) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Período seleccionado invalida. Por favor tente outro!',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                        $('#dateInicial, #dateFinal').removeClass('is-valid');
+                        $('#dateInicial, #dateFinal').addClass('is-invalid invalid');
+                    } else {
+                        Swal.fire({
+                            title: 'Por favor, aguarde !',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading()
+                            },
+                        });
+
+                        const model = {
+                            "idCanal": parseInt($("#IdCanal").val()),
+                            "tipoSpot": parseInt($("#tipoProcesso").val()),
+                            "idCliente": $('#clienteSelect2').val(),
+                            "dataI": $('#dateInicial').val(),
+                            "dataF": $('#dateFinal').val(),
+                            "reportName": "CertificadoEmissao"
+                        }
+                        $.ajax({
+                            url: '/Report/Print',
+                            type: "get",
+                            cache: false,
+                            data: model,
+                            success: function (data) {
+                                if (parseInt(data.d) == -1) {
+                                    swal.close();
+                                    Swal.fire({
+                                        icon: 'info',
+                                        title: 'Não existe nenhum dado disponível para o Período seleccionado. Por favor tente outro!',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    })
+                                } else {
+
+                                    let url = "Relatorios/Print?idCanal=" + parseInt($("#IdCanal").val()) + "&tipoSpot=" + parseInt($("#tipoProcesso").val()) + "&idCliente=" + $('#clienteSelect2').val() + "&dataI=" + $('#dateInicial').val() + "&dataF=" + $('#dateFinal').val() + "&reportName=CertificadoEmissao";
+                                    $('#print_frame').attr('src', url)
+                                    checkIframeLoaded();
+                                    setTimeout(() => {
+                                        swal.close();
+                                    }, 3000);
+                                    //window.open("/Report/PrintCertificado?idCanal=" + parseInt($("#IdCanal").val()) + "&idCliente=" + idCliente + "&dataI=" + $('#dateInicial').val() + "&dataF=" + $('#dateFinal').val()+"&reportName=CertificadoEmissao");
+                                    reset();
+                                }
+
+                            },
+                            error: function (xhr, status, error) {
+                                console.log(xhr)
+                            }
+                        })
+                    }
+
+                }
+            })
+            
+            const checkIframeLoaded = () => {
+                var iframe = document.getElementById('print_frame');
+                var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+                if (  iframeDoc.readyState  == 'complete' ) {
+                    swal.close();
+                    return;
+                } 
+                window.setTimeout(checkIframeLoaded, 100);
+            }
+
+            $("#clienteSelect2").select2({
+                placeholder: "Pesquise o cliente pelo nome",
+                allowClear: true,
+                ajax: {
+                    url: '/api/Clientes/search/',
+                    contentType: "application/json; charset=utf-8",
+                    data: function (params) {
+                        var query =
+                        {
+                            any: params.term,
+                        };
+                        return query;
+                    },
+                    processResults: function (result) {
+                        return {
+                            results: $.map(result, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.designacao
+                                };
+                            }),
+                        };
+                    }
+                }
+            });
+        })
+    </script>
+}

@@ -1,0 +1,47 @@
+﻿@inject SignInManager<IdentityUser> signInManager;
+@inject UserManager<IdentityUser> UserManager
+@{ 
+    var userId = UserManager.GetUserId(User);
+}
+<li class="nav-item dropdown">
+
+    <a href="#" data-toggle="dropdown" aria-expanded="false">
+        <div class="user-panel d-flex">
+
+
+            <div class="image">
+                <img src="~/images/blank-profile-picture-973460__340.png" class="img-circle" alt="User Image" />
+            </div>
+            <div class="info">
+                @if (signInManager.IsSignedIn(User))
+                {
+                    <span class="d-block">@User.Identity.Name</span>
+
+                    <span>@User.FindFirst("Role").Value</span>
+                }
+                else
+                {
+                    <span class="d-block">Desconhecido</span>
+                    <span>Desconhecido</span>
+                }
+            </div>
+        </div>
+    </a>
+    <div class="dropdown-menu" style="">
+        <a  class="dropdown-item" asp-action="UpdatePassword" asp-controller="Administration" asp-route-id="@userId">
+            Alterar Senha
+        </a>
+        <form method="post" asp-action="logout" asp-controller="account">
+            <button type="submit" class="dropdown-item">
+                Sair
+            </button>
+        </form>
+    </div>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <form method="post" asp-action="logout" asp-controller="account">
+            <button type="submit" class="nav-link btn btn-default btn-block form-sair py-0" style="width:100%">
+                Sair
+            </button>
+        </form>
+    </div>
+</li>

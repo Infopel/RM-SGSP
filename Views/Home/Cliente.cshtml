@@ -1,0 +1,401 @@
+﻿@{
+    ViewData["Title"] = "SGSP - Rádio de Moçambique | Cliente";
+}
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Campanhas</h1>
+</div>
+<div class="col-md-12" style="z-index: 1;">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label"> Campanha</label>
+                        <select class="form-control select2 is-request" name="Campanha" id="IdCampanha" data-message-error="Este campo é obrigatório." style="width: 100%;">
+                        </select>
+                        <span class="error invalid-feedback IdCampanha"></span>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="fomr-group">
+                        <label class="control-label">Período</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control is-request" id="dateInicial" name="Data de Início" data-message-error="Este campo é obrigatório." placeholder="dd/mm/yyyy" />
+                            <span class="input-group-append">
+                                <span class="btn btn-primary">a</span>
+                            </span>
+                            <input type="date" class="form-control is-request" style="text-align: end" name="Data de Término" data-message-error="Este campo é obrigatório." id="dateFinal" placeholder="dd/mm/yyyy" disabled />
+                        </div>
+                        <span class="error invalid-feedback dateFinal dateInicial"></span>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="fomr-group">
+                        <label class="control-label">&nbsp;</label>
+                        <button type="button" class="form-control btn btn-primary btn-sm filtrarCampanha">Filtrar</button>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="fomr-group">
+                        <label class="control-label">&nbsp;</label>
+                        <button type="button" class="form-control btn btn-danger btn-sm clean-list" disabled>Limpar</button>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-10 offset-md-1 mt-20 table-responsive">
+    <div class="card">
+        <div class="card-body">
+            <table id="campanhasTable" class="table table-sm table-hover dataTable dtr-inline">
+                <thead>
+                    <tr>
+                        <th>DESIGNAÇÃO</th>
+                        <th>DURAÇÃO</th>
+                        <th>CANAL</th>
+                        <th>DATA</th>
+                        <th>HORA</th>
+                        <th>ESTADO</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-motivo" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4><span style="margin: .6rem; color:#fff !important" class="badge bg-danger"> Não Transmitido</span>
+                <button type="button" class="md-close close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Motivo</label>
+                            <textarea class="form-control" style="background-color: white;" name="Motivo" data-message-error="Este campo é obrigatório." id="Motivo" rows="6" disabled></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border: none;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<span id="idCliente" hidden>@User.FindFirst("IdUser").Value</span>
+
+<link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+@section scripts{
+
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/plugins/jszip/jszip.min.js"></script>
+    <script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
+<script>
+    $('.select2').select2();
+
+    var Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
+
+    var dropwonValue = '';
+    let clienteId = '';
+    const getIdCliente = $('#idCliente').html();
+
+
+    "use strict";
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/planificacaoHub").build();
+    $(document).ready(function () {
+
+        let idCliente = parseInt(getIdCliente);
+
+        connection.on("ReceivePlanificacaoChange", function (idCanal) {
+            loadAnuncios(idCliente);
+/*            reset();*/
+        });
+
+        Swal.fire({
+            title: 'Por favor, aguarde !',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+        });
+
+        const getSpots = () => {
+            $.ajax({
+                type: "GET",
+                url: "/api/Spots/getSpotsCliente/" + getIdCliente,
+                success: function (data) {
+                    if (data.length == 0) {
+                        dropwonValue = '<option value="" disabled selected hidden>Cliente sem Campanha</option>';
+                        swal.close();
+                        $('#dateInicial, #IdCampanha, .filtrarCampanha').prop("disabled", true);
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cliente econntra-se sem campanhas no momento.',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    } else {
+                        if (parseInt(data.d) != -1) {
+                            dropwonValue = '<option value="" disabled selected hidden>Selecione a Campanha</option>';
+                            for (let i = 0; i < data.length; i++) {
+                                dropwonValue += '<option value="' + data[i].id + '">' + data[i].designacao + '</option>';
+                            }
+                            clienteId = data[0].idCliente
+                            $('#dateInicial, #IdCampanha, .filtrarCampanha').prop("disabled", false);
+                        } else {
+                            dropwonValue = '<option value="" disabled selected hidden>Cliente sem Campanha</option>';
+                            swal.close();
+                            $('#dateInicial, #IdCampanha, .filtrarCampanha').prop("disabled", true);
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Cliente econntra-se sem campanhas no momento.',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        }      
+                    }
+                    $("#IdCampanha").html(dropwonValue);
+                }
+            });
+        };
+        getSpots();
+
+        const loadAnuncios = (idCliente) => {
+            $('#campanhasTable').DataTable({
+                dom: "Bfrtip",
+                "buttons": ["excel", "pdf", "print", "colvis"],
+                destroy: true,
+                "paging": true,
+                "pageLength": 25,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "ajax": {
+                    "url": "/api/Planificacoes/listPlanificacaoClienteBy/" + getIdCliente,
+                    "type": "Get"
+                },
+                columns: [
+                    { data: "designacaoProcesso" },
+                    {
+                        data: "duracao", render: function (data) {
+                            if (data != null) {
+                            const duracao = data.split(":");
+                            let sec = '';
+                            if (duracao[1] == "00")
+                                sec = duracao[2] + '"'
+                            else
+                                sec = duracao[1] + "' " + duracao[2] + '"'
+
+                                return sec;
+                            } else
+                                return data
+                        }
+                    },
+                    { data: "canalDesignacao" },
+
+                    {
+                        data: "lastDate", render: function (data, type, row, meta) {
+                            console.log(data)
+                            let date = new Date(data);
+                            let d = date.getDate();
+                            let m = date.getMonth() + 1;
+                            let y = date.getFullYear();
+                            swal.close();
+                            return (d <= 9 ? '0' + d : d) + '/' + (m <= 9 ? '0' + m : m) + '/' + y;
+                        }
+                    },
+                    {
+                        data: "lastDate", render: function (data) {
+                                let d = new Date(data)
+
+                                let hour = d.getHours();
+                                let min = d.getMinutes();
+
+                                if (min < 10)
+                                    min = "0" + min;
+
+                                if (hour < 10)
+                                    hour = "0" + hour;
+
+                                return hour + "h" + min;
+                        }
+                    },
+                    { data: "estadoHTML" }
+                ]
+            });
+        }
+        loadAnuncios(idCliente)
+
+        $('#dateFinal, #dateInicial').prop('max', GetTodayDate())
+        $('#dateInicial').prop('min', '');
+        $('#dateInicial').on('input', function () {
+            $('#dateFinal').prop('min', $(this).val())
+            $("#dateFinal").prop("disabled", false);
+        })
+
+        $('#dateFinal').on('input', function () {
+            if ($('#dateInicial').val() !== '') {
+                if ($('#IdCampanha').val() !== null)
+                    $(".clean-list").prop("disabled", false);
+            }
+        })
+
+        $('#IdCampanha').on('input', () => {
+            if ($('#dateInicial').val() !== '') 
+                $(".clean-list").prop("disabled", false);
+            else
+                $(".clean-list").prop("disabled", true);
+        })
+        const reset = () => {
+            $('input').val('').trigger('change');
+            $('#IdCampanha').val('').trigger('change');
+            $("input, select").removeClass('is-valid is-invalid invalid');
+            $(".invalid-feedback").hide();
+            $("#dateFinal ").prop("disabled", true);
+        };
+
+        $(".clean-list").click(() => {
+            Swal.fire({
+                title: 'Por favor, aguarde !',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+            });
+            loadAnuncios(idCliente);
+            reset();
+        })
+
+        $('.filtrarCampanha').click(() => {
+            Validation.validate('.is-request');
+            if (!n) {
+                Swal.fire({
+                    title: 'Por favor, aguarde !',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                
+                $('#campanhasTable').DataTable({
+                    dom: "Bfrtip",
+                    "buttons": ["excel", "pdf", "print", "colvis"],
+                    destroy: true,
+                    "paging": true,
+                    "pageLength": 25,
+                    "lengthChange": false,
+                    "searching": false,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "ajax": {
+                        "url": '/api/Planificacoes/listPlanificacaoClienteFilterBy/' + clienteId
+                            + "/" + parseInt($('#IdCampanha').val()) + "/" + $('#dateInicial').val() + "/" + $('#dateFinal').val(),
+                        "type": "Get"
+                    },
+                    columns: [
+                        { data: "designacaoProcesso" },
+                        {
+                            data: "duracao", render: function (data) {
+                                if (data != null) {
+                                const duracao = data.split(":");
+                                let sec = '';
+                                if (duracao[1] == "00")
+                                    sec = duracao[2] + '"'
+                                else
+                                    sec = duracao[1] + "' " + duracao[2] + '"'
+
+                                    return sec;
+                                } else
+                                    return data
+                            }
+                        },
+                        { data: "canalDesignacao" },
+                        {
+                            data: "lastDate", render: function (data, type, row, meta) {
+                                let date = new Date(data);
+                                let d = date.getDate();
+                                let m = date.getMonth() + 1;
+                                let y = date.getFullYear();
+                                swal.close();
+                                return (d <= 9 ? '0' + d : d) + '/' + (m <= 9 ? '0' + m : m) + '/' + y;
+                            }
+                        },
+                        {
+                            data: "lastDate", render: function (data) {
+                                    let d = new Date(data)
+
+                                    let hour = d.getHours();
+                                    let min = d.getMinutes();
+
+                                    if (min < 10)
+                                        min = "0" + min;
+
+                                    if (hour < 10)
+                                        hour = "0" + hour;
+
+                                    return hour + "h" + min;
+                            }
+                        },
+                        { data: "estadoHTML" }
+                    ]
+                });
+
+            }
+        })
+
+        $('#campanhasTable tbody').off('click');
+        $('#campanhasTable').on('click', '.view-parecer', function () {
+
+
+            const parecer = $(this).attr("data-parecer");
+            const designacao = $(this).attr("data-designacao")
+            $("#Motivo").val(parecer);
+            $(".modal-title").text(designacao);
+
+            $('#modal-motivo').modal('show');
+
+        });
+    })
+</script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

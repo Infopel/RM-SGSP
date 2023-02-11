@@ -1,0 +1,307 @@
+﻿@{
+    ViewData["Title"] = "SGSP - Rádio de Moçambique | Spot - Edit";
+}
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Editar Spot <strong class="code-processo">#</strong></h1>
+</div>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label"> Código</label>
+                        <input class="form-control disabled-on" id="Code" name="Código" data-message-error="Este campo é obrigatório." placeholder="Insira o código do spot" disabled />
+                        <span class="error invalid-feedback Code"></span>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <label class="control-label">Cliente</label>
+                    <div class="input-group">
+                        <input type="text" id="pesCliente" class="form-control isPes" name="NUIT" data-message-error="Este campo é obrigatório." placeholder="Pesquisar Cliente pelo NUIT" data-inputmask='"mask": "999999999"' data-mask disabled>
+                        <input type="text" style="width:30%" id="pesNome" class="form-control" placeholder="Nome do Cliente" disabled />
+                        <span class="error invalid-feedback pesCliente"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">Designacão </label>
+                        <textarea rows="2" data-message-error="Este campo é obrigatório." class="form-control disabled-on isOb" id="Designacao" name="Designação" placeholder="Insira a designação do anúncio"></textarea>
+                        <span class="error invalid-feedback Designacao"></span>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="control-label"> Canal</label>
+                        <input class="form-control disabled-on" name="Canal" id="IdCanal" data-message-error="Este campo é obrigatório." disabled />
+                        <span class="error invalid-feedback IdCanal"></span>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="fomr-group">
+                        <label class="control-label">Data de Início</label>
+                        <label class="float-right control-label">Data de Término</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control disabled-on" id="dateInicial" name="Data de Início" data-message-error="Este campo é obrigatório." placeholder="dd/mm/yyyy" disabled />
+                            <span class="input-group-append">
+                                <span class="btn btn-primary">a</span>
+                            </span>
+                            <input type="date" class="form-control isOb" style="text-align: end" name="Data de Término" data-message-error="Este campo é obrigatório." id="dateFinal" placeholder="dd/mm/yyyy" />
+                        </div>
+                        <span class="error invalid-feedback dateFinal dateInicial"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label"> Duração</label>
+                        <input type="text" class="form-control disabled-on isOb" id="duracao" name="Duração" placeholder="HH:mm:ss" data-inputmask='"mask": "99:99:99s"' data-mask />
+                        <span class="error invalid-feedback duracao"></span>
+                    </div>
+                </div>
+            </div>
+            <span class="id-cliente" hidden="hidden"></span>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-md-12 mb-3">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Planificação do Spot</h3>
+        </div>
+        <div class="card-body table-responsive">
+            <div class="row">
+                <div class="col-md-7 offset-md-2">
+                    <table class="table text-nowrap table-sm" id="tablePlanificacao">
+                        <thead>
+                            <tr>
+                                <th class="col-sm-6">Data</th>
+                                <th class="col-sm-6">Janela</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPlanificacao">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <span class="id-spot" hidden></span>
+            <br />
+            <br />
+            <div class="form-group">
+                <button class="btn btn-primary float-right actualizarSpot disabled-onB" disabled>Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<span hidden id="roleUser">@User.FindFirst("Role").Value</span>
+
+@section Scripts {
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
+    <script>
+        $('[data-mask]').inputmask({ "placeholder": "" });
+        let dropwonValueJanelas = '';
+        let janelasUp = [];
+        var arrayOfIds = ''
+        var isActive = false;
+
+        "use strict";
+
+        var connection = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.Debug)
+            .withUrl("/planificacaoHub", {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .build();
+
+
+        $(document).ready(function () {
+
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const codeProcesso = urlParams.get('code');
+
+            connection.start().then(function () {
+                console.log()
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+            Swal.fire({
+                title: 'Por favor, aguarde !',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+            });
+
+            $.ajax({
+                url: '/api/Spots/getBy/' + codeProcesso.replaceAll("/", "-"),
+                type: "get",
+                success: function (data) {
+                    swal.close();
+                    processo(data);
+                }
+            })
+
+            const processo = (data) => {
+                $('#Code').val(data.code);
+                $('.code-processo').text("#" + data.code);
+                $('.id-spot').text(data.id);
+                $('#Designacao').val(data.designacao);
+                $('#IdCanal').val(data.idCanalNavigation.designacao);
+                $('#dateInicial').val(dateConvert(data.dataInicio));
+                $('#dateFinal').val(dateConvert(data.dataFim));
+                $('#duracao').val(data.duracao);
+                $('#pesCliente').val(data.idClienteNavigation.nuit);
+                $('#pesNome').val(data.idClienteNavigation.designacao);
+
+                planificacao(data.spotPlanificacaos, data.idCanalNavigation.janelas, data.dataInicio, data.dataFim);
+            }
+
+            const planificacao = (data, janelas, dataSpotI, dataSpotF) => {
+
+                const plan = data;
+
+                for (let p in plan) {
+                    if (plan[p].estado === 1) {
+                        insertTr(plan[p].id, plan[p].dataPlanificacao, plan[p].idJanelaNavigation.id, dataSpotI, dataSpotF)
+                        janelasUp.push({ 'id': plan[p].id, "dataPlanificacao": plan[p].dataPlanificacao, 'idJanela': plan[p].idJanelaNavigation.id, 'isReagendamento': false })
+                    }
+                }
+
+                dropwonValueJanelas = '<option value="" disabled selected hidden>Selecione a Janela</option>';
+
+                for (let i in janelas) {
+                    dropwonValueJanelas += '<option value="' + janelas[i].id + '">' + janelas[i].designacao + '</option>';
+                }
+            }
+
+            const insertTr = function (id, data, idJanela, dataI, dataF) {
+                $('#tablePlanificacao tbody:first').append('<tr itemid="' + id + '">'
+                    + '<td>'
+                    + '<input type="date" class="form-control dateSet" min="' + dateConvert(dataI) + '" max="' + dateConvert(dataF) + '" id="' + id + '" value="' + dateConvert(data) + '" placeholder="dd/mm/yyyy" />'
+                    + '</td>'
+                    + '<td>'
+                    + '<select class="form-control form-control-border ' + id + '" id="' + id + 'a" style="width: 100%;" >'
+                    + '</select >'
+                    + '</td>'
+                    + '</tr>');
+
+                $('.' + id).select2();
+
+                setTimeout(() => {
+                    $('#' + id + 'a').html(dropwonValueJanelas);
+                    $('#' + id + 'a').val(idJanela).trigger('change')
+                }, 100)
+
+
+            };
+
+            function dateConvert(data) {
+                let date = new Date(data);
+                let d = date.getDate();
+                let m = date.getMonth() + 1;
+                let y = date.getFullYear();
+                return y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+            }
+
+            $('#dateFinal').on('input', () => {
+                $('.dateSet').prop('max', $('#dateFinal').val())
+            })
+
+            setTimeout(() => {
+                $(".dateSet").on('input', () => {
+                    $(".disabled-onB").prop("disabled", false);
+                    arrayOfIds = $.map($(".dateSet"), function (n, i) {
+                        return n.id;
+                    });
+
+                    for (let i in arrayOfIds) {
+                        for (let j in janelasUp) {
+                            if (janelasUp[j].id == arrayOfIds[j])
+                                janelasUp[j].dataPlanificacao = $('#' + arrayOfIds[j]).val();
+                            janelasUp[j].idJanela = $('#' + arrayOfIds[j] + 'a').val();
+                            janelasUp[j].isReagendamento = true;
+                        }
+                        break;
+                    }
+                })
+            }, 1500)
+
+            $('input, textarea').on('input', () => {
+                $(".disabled-onB").prop("disabled", false);
+                isActive = true;
+            })
+
+            $('#duracao').on('input', function () {
+                if ($(this).val().length < 9) {
+                    $(this).addClass('invalid');
+                } else {
+                    $(this).removeClass('invalid');
+                }
+            })
+
+            $('.actualizarSpot').click(function () {
+
+                Validation.validate('.isOb');
+                if (!n) {
+                    Swal.fire({
+                        title: 'Por favor, aguarde !',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+
+                    const spot = {
+                        'id': parseInt($('.id-spot').html()),
+                        'designacao': $('#Designacao').val(),
+                        'dataFim': $('#dateFinal').val(),
+                        'duracao': $('#duracao').val().replace("s", ""),
+                        'isActive': isActive,
+                        'spotPlanificacaos': janelasUp
+                    }
+                    $.ajax({
+                        contentType: 'application/json; charset=UTF-8',
+                        url: '/api/Spots/editarSpot/' + parseInt($('.id-spot').html()),
+                        type: "post",
+                        data: JSON.stringify(spot),
+                        success: function () {
+                            swal.close();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Actualizado com Sucesso.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            connection.invoke("PlanificacaoChange", parseInt($("#IdCanal").val())).catch(function (err) {
+                                return console.error(err.toString());
+                            });
+                            setTimeout(() => {
+                                location.href = '/Spots';
+                            }, 500)
+                        },
+                        error: function (xhr, status, error) {
+                            swal.close();
+                            console.log(xhr)
+                        }
+                    });
+                }
+            })
+        });
+    </script>
+}

@@ -1,0 +1,468 @@
+﻿
+@{
+    ViewData["Title"] = "SGSP - Rádio de Moçambique | Spots";
+}
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Spots</h1>
+</div>
+
+<div class="col-md-12 mb-4">
+    <a asp-action="Create" class="btn btn-primary btn-sm float-right"><i class="fas fa-plus"></i> Adicionar Spot</a>
+    <div class="select-Style-2" style=" margin-top: 0;">
+        <select class="form-control-sm select2 disabled-on isOb" name="Canal" id="IdCanalF" data-message-error="Este campo é obrigatório.">
+        </select>
+    </div>
+</div>
+<div class="col-md-12 table-responsive">
+    <div class="card">
+        <div class="card-body">
+            <table id="spotsTable" class="table table-sm table-hover dataTable dtr-inline">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>DESIGNAÇÃO</th>
+                        <th>PERIODO</th>
+                        <th>data DE inÍcio</th>
+                        <th>data DE TÉRMINO</th>
+                        <th>periodicidade</th>
+                        <th>cliente</th>
+                        <th>estado</th>
+                        <th class="text-center"><i class="fas fa-ellipsis-v"></i></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-editarSpot" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Spot #<span class="code-spot"></span></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="inputCodeEdit" class="control-label">Código</label>
+                            <input type="text" class="form-control isOb" id="inputCodeEdit" name="Código" data-message-error="Este campo é obrigatório." placeholder="Insira o código do spot">
+                            <span class="error invalid-feedback inputCodeEdit"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label">Designação</label>
+                            <input type="text" class="form-control isOb" name="Designação" data-message-error="Este campo é obrigatório." id="inputDesignacaoEdit" />
+                            <span class="error invalid-feedback inputDesignacaoEdit"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="fomr-group">
+                            <label class="control-label">Data de Início</label>
+                            <label class="float-right control-label">Data de Término</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control isOb" name="Data de Início" data-message-error="Este campo é obrigatório." id="dateInicial" placeholder="dd/mm/yyyy" disabled />
+                                <span class="input-group-append">
+                                    <span class="btn btn-primary">a</span>
+                                </span>
+                                <input type="date" class="form-control isOb" style="text-align: end" name="Data de T;ermino" data-message-error="Este campo é obrigatório." id="dateFinal" placeholder="dd/mm/yyyy" disabled />
+                            </div>
+                            <span class="error invalid-feedback dateFinal dateInicial"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label"> Periodicidade</label>
+                            <input type="number" id="periodicidade" class="form-control isOb" name="Periodicidade" data-message-error="Este campo é obrigatório." placeholder="Insira a periodicidade" disabled />
+                            <span class="error invalid-feedback periodicidade"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label"> Duração</label>
+                            <input type="text" class="form-control isOb" id="duracao" name="Duração" data-message-error="Este campo é obrigatório." data-inputmask='"mask": "99:99:99s"' data-mask placeholder="HH:mm:ss" />
+                            <span class="error invalid-feedback duracao"></span>
+                        </div>
+                    </div>
+                </div>
+                <span class="id-spot" hidden="hidden"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary saveUpdade btn-sm disabled-on" disabled>Salvar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-canalSelect" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="border: none;">
+                <button type="button" class="close-modal" hidden data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-10">
+                        <span style="color: red">*</span> <span style="font-style: italic;">Nota:</span> É obrigatorio selecionar um <strong> CANAL </strong> para poder visualizar os Spots
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-10">
+                        <div class="form-group">
+                            <select class="form-control select2 disabled-on isOb" name="Canal" id="IdCanal" data-message-error="Este campo é obrigatório." style="width: 100%;">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border: none;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<span hidden id="idUser">@User.FindFirst("IdUser").Value</span>
+<span hidden id="userName">@User.FindFirst("UserName").Value</span>
+
+<link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="~/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+@section scripts{
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/plugins/jszip/jszip.min.js"></script>
+    <script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
+    <script>
+        $('.select2').select2();
+
+        "use strict";
+
+        var connection = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.Debug)
+            .withUrl("/planificacaoHub", {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .build();
+
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        connection.start().then(function () {
+            console.log()
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+
+        var dropwonValue = '';
+        $(document).ready(function () {
+            Swal.fire({
+                title: 'Por favor, aguarde !',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+            });
+
+            const getIdUser = $('#idUser').html();
+            const getUserName = $('#userName').html();
+
+            const getCanals = (getIdUser, getUserName) => {
+                if (getUserName.toLocaleLowerCase().includes('admin')) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/Canals",
+                        data: "{}",
+                        success: function (data) {
+                            $('#modal-canalSelect').modal('show');
+
+                            swal.close();
+
+                            dropwonValue = '<option value="" disabled selected hidden>Selecione o Canal</option>';
+                            for (let i = 0; i < data.length; i++) {
+                                dropwonValue += '<option value="' + data[i].id + '">' + data[i].designacao + '</option>';
+                            }
+                            $("#IdCanal").html(dropwonValue);
+                            $("#IdCanalF").html(dropwonValue);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/Canals/getCanaisUserBy/" + getIdUser,
+                        data: "{}",
+                        success: function (data) {
+                            $('#modal-canalSelect').modal('show');
+
+                            swal.close();
+                            dropwonValue = '<option value="" disabled selected hidden>Selecione o Canal</option>';
+                            const result = data.result;
+                            for (let i = 0; i < result.length; i++) {
+                                dropwonValue += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                            }
+                            $("#IdCanal").html(dropwonValue);
+                            $("#IdCanalF").html(dropwonValue);
+                        }
+                    });
+                }
+            };
+            getCanals(getIdUser, getUserName);
+
+
+            $('[data-mask]').inputmask();
+
+            const loadSpots = (idCanal) => {
+                $('#spotsTable').DataTable({
+                    destroy: true,
+                    "ajax": {
+                        "url": "/api/Spots/listSpotsBy/" + idCanal,
+                        "type": "Get"
+                    },
+                    columns: [
+                        { data: "code" },
+                        { data: "designacao" },
+                        { data: "periodo" },
+                        {
+                            data: "dataInicio", render: function (data, type, row, meta) {
+                                let date = new Date(data);
+                                let d = date.getDate();
+                                let m = date.getMonth() + 1;
+                                let y = date.getFullYear();
+                                return (d <= 9 ? '0' + d : d) + '/' + (m <= 9 ? '0' + m : m) + '/' + y;
+                            }
+                        },
+                        {
+                            data: "dataFim", render: function (data, type, row, meta) {
+                                let date = new Date(data);
+                                let d = date.getDate();
+                                let m = date.getMonth() + 1;
+                                let y = date.getFullYear();
+                                return (d <= 9 ? '0' + d : d) + '/' + (m <= 9 ? '0' + m : m) + '/' + y;
+                            }
+                        },
+                        { data: "periodicidade" },
+                        { data: "cliente" },
+                        { data: "estado" },
+                        { data: "action" }
+                    ],
+                    "oLanguage": {
+
+                        "sSearch": "Pesquisar Spot:"
+
+                    }
+                });
+            }
+
+            $("#IdCanal").on('input', () => {
+                $('.close-modal').click();
+                $('#IdCanalF').val($("#IdCanal").val()).trigger('change')
+                loadSpots($("#IdCanal").val());
+            })
+
+            $("#IdCanalF").on('input', () => {
+                loadSpots($("#IdCanalF").val());
+            })
+
+            $('#spotsTable tbody').off('click');
+            $('#spotsTable').on('click', '.editarr', function () {
+
+
+                const idv = $(this).attr("data-id");
+                const designacao = $(this).attr("data-designacao");
+                const duracao = $(this).attr("data-duracao");
+                const codigo = $(this).attr("data-codigo");
+                const dataI = $(this).attr("data-datai");
+                const dataF = $(this).attr("data-dataf");
+                const periodicidade = $(this).attr("data-periodicidade");
+
+                $(".code-spot").text(codigo);
+                $(".disabled-on").prop("disabled", true);
+
+                $("#inputDesignacaoEdit").val(designacao);
+                $("#inputCodeEdit").val(codigo);
+                $("#dateInicial").val(dateTimeConvert(dataI));
+                $("#dateFinal").val(dateTimeConvert(dataF));
+                $("#periodicidade").val(periodicidade);
+                $("#duracao").val(duracao);
+
+                $(".id-spot").text(idv);
+
+                $('#modal-editarSpot').modal('show');
+
+            });
+
+            $('#inputDesignacaoEdit, #inputCodeEdit, #dateInicial, #dateFinal, #periodicidade, #duracao').on('input', function () {
+                $(".disabled-on").prop("disabled", false);
+            })
+
+            $('#spotsTable').on('click', '.destivarr', function () {
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-primary',
+                        cancelButton: 'btn btn-danger mg-1'
+                    },
+                    buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: 'Tem certeza, que deseja remover o Spot?',
+                    text: "Você não poderá reverter esta operação!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sim, remover!',
+                    cancelButtonText: 'Não, cancelar!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Por favor, aguarde !',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading()
+                            },
+                        });
+                        $.ajax({
+                            url: "api/Spots/disableSpot/" + parseInt($(this).attr("data-id")),
+                            type: "post",
+                            success: function () {
+                                ReloadGrid();
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Spot removido com sucesso.'
+                                })
+                                connection.invoke("PlanificacaoChange", parseInt($('#IdCanalF').val())).catch(function (err) {
+                                    return console.error(err.toString());
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                console.log(xhr)
+                            }
+                        });
+
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Cancelado',
+                            'Sua operação foi abortada :)',
+                            'error'
+                        )
+                    }
+                })
+
+            });
+
+            function ReloadGrid() {
+                $('#spotsTable').DataTable().clear();
+                $('#spotsTable').DataTable().ajax.reload();
+            }
+
+            function dateConvert(data) {
+                let date = new Date(data);
+                let d = date.getDate();
+                let m = date.getMonth() + 1;
+                let y = date.getFullYear();
+                return (d <= 9 ? '0' + d : d) + '/' + (m <= 9 ? '0' + m : m) + '/' + y;
+            }
+
+            function dateTimeConvert(data) {
+                let date = new Date(data);
+                let d = date.getDate();
+                let m = date.getMonth() + 1;
+                let y = date.getFullYear();
+
+                return y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+            }
+
+            $('.saveUpdade').click(function () {
+
+                Validation.validate('.isOb');
+
+                if (!n) {
+                    Swal.fire({
+                        title: 'Por favor, aguarde !',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+
+                    const spotEdi = {
+                        "id": parseInt($('.id-spot').html()),
+                        "designacao": $('#inputDesignacaoEdit').val(),
+                        "code": $('#inputCodeEdit').val(),
+                        "dataInicio": $('#dateInicial').val(),
+                        "dataFim": $('#dateFinal').val(),
+                        "duracao": $('#duracao').val().replace("s", ""),
+                        "periodicidade": $('#periodicidade').val()
+                    }
+
+                    $.ajax({
+                        contentType: 'application/json; charset=UTF-8',
+                        url: '/api/Spots/updateSpot/' + parseInt($('.id-spot').html()),
+                        type: "post",
+                        data: JSON.stringify(spotEdi),
+                        success: function (result, status, xhr) {
+                            swal.close();
+                            $('#modal-editarSpot').modal('hide');
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Spot actualizado com Sucesso.'
+                            })
+                            ReloadGrid();
+                        },
+                        error: function (xhr, status, error) {
+                            swal.close();
+                            console.log(xhr)
+                        }
+                    });
+                }
+
+            })
+        });
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

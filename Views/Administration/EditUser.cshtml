@@ -1,0 +1,282 @@
+﻿@model SGSP.Models.EditUserViewModel
+@{
+    ViewData["Title"] = "EditUser";
+}
+
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Utilizadores</h1>
+</div>
+
+<div class="col-md-12">
+    <!-- Horizontal Form -->
+    <div class="card card-default">
+        <div class="card-header">
+            <h3 class="card-title">Editar Utilizador</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form asp-action="EditUser" method="post" class="form-horizontal">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group row">
+                    <label asp-for="UserName" for="inputEmail3" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="UserName" class="form-control" id="inputEmail3" placeholder="Username" />
+                    </div>
+
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <label asp-for="Email" for="inputEmail4" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="Email" class="form-control" id="inputEmail4" placeholder="Email" />
+                    </div>
+
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <a asp-action="ListUsers" type="submit" class="btn btn-default">Voltar</a>
+                <input type="submit" value="Salvar" class="btn btn-primary float-right" />
+            </div>
+            <!-- /.card-footer -->
+        </form>
+    </div>
+</div>
+
+
+<div class="col-md-12 table-responsive">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Role(s) do utilizador (@Model.UserName)</h3>
+        </div>
+
+        <div class="card-body">
+            @if (Model.Roles.Any())
+            {
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{int i = 0;}
+
+                        @foreach (var role in Model.Roles)
+                        {
+                            <tr>
+                                <td>@(i+1)</td>
+                                <td>@role</td>
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h5 class="card-title">None at the moment</h5>
+            }
+
+        </div>
+        <div class="card-footer">
+            <a asp-action="ManageUserRoles" asp-controller="Administration" asp-route-userId="@Model.Id" class="btn btn-primary" style="width:auto">Adicionar/Apagar roles</a>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 table-responsive">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Canal(s) do utilizador (@Model.UserName)</h3>
+        </div>
+
+        <div class="card-body">
+            <table id="records_table" class="table table-hover text-nowrap">
+                <thead>
+                    <tr>
+                        <th style="width: 10px">#</th>
+                        <th>Canal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <h5 class="card-title display-if"><br/>None at the moment</h5>
+
+        </div>
+        <div class="card-footer">
+            <a class="btn btn-primary" data-toggle="modal" data-target="#modal-canalSelect" style="width:auto">Adicionar/Apagar Canal</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-canalSelect" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Adicionar/Apagar Canal</h4>
+                <button type="button" class="close canceling" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-sm-12 text-center">
+                        <span style="color: red">*</span> <span style="font-style: italic;">Nota:</span> É obrigatorio selecionar um <strong> CANAL </strong> no minimo, para poder visualizar a Planificação
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-10">
+                        <div class="form-group">
+                            <select class="form-control select2 disabled-on" multiple="multiple" data-placeholder="Selecionar Canal" name="Canal" id="IdCanal" data-message-error="Este campo é obrigatório." style="width: 100%;">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+            </div>
+            <div class="modal-footer toHidden">
+                <button type="button" class="btn btn-primary btn-sm isDisabled salvarEstado" disabled>Salvar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm modal-close canceling" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #007bff;
+        border: 1px solid #007bff;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: #fff;
+    }
+</style>
+@section Scripts {
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/plugins/moment/moment.min.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+            let userCanais;
+            let saveCanais;
+            let setCanais = [];
+
+            const getCanals = () => {
+                $.ajax({
+                    type: "GET",
+                    data: "{}",
+                    url: "/api/Canals/getCanaisUserBy/" + location.href.split('/').pop(),
+                    success: function (data) {
+                        userCanais = data.result;
+
+                        if (userCanais.length == 0) {
+                            $('.display-if').show();
+                        } else {
+                            $('.display-if').hide();
+                            var trHTML = '';
+                            $.each(data.result, function (i, item) {
+                                trHTML += '<tr><td>' + (i + 1) + '</td><td>' + item.name + '</td></tr>';
+                            });
+                            $('#records_table').append(trHTML);
+                        }
+
+                    }
+                });
+            };
+            getCanals();
+
+            const getAllCanals = () => {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/Canals",
+                    data: "{}",
+                    success: function (data) {
+                        dropwonValue = '';
+                        for (let i = 0; i < data.length; i++) {
+                            dropwonValue += '<option value="' + data[i].id + '">' + data[i].designacao + '</option>';
+                        }
+                        $("#IdCanal").html(dropwonValue);
+                        $.each(userCanais, function (i, item) {
+                            setCanais.push(item.id)
+                        });
+
+                        $("#IdCanal").val(setCanais).trigger('change');
+                    }
+                });
+            };
+            setTimeout(() => {
+                getAllCanals();
+            }, 1000);
+
+
+            $('#IdCanal').on('input', function () {
+                const canal = $('#IdCanal').val();
+                if (canal.length >= 1) {
+                    $(".isDisabled ").prop("disabled", false);
+                } else {
+                    $(".isDisabled ").prop("disabled", true);
+                }
+            })
+
+            $('.canceling').on('click', function () {
+                $("#IdCanal").val(saveCanais).trigger('change');
+                $(".isDisabled ").prop("disabled", true);
+            })
+
+            const saveUpdateCanal = () => {
+
+                const usuario = {
+                    IdUserAsp: location.href.split('/').pop(),
+                    NewIdCanais: $("#IdCanal").val(),
+                    OldIdCanais: setCanais
+                }
+
+                $.ajax({
+                    url: "/api/Canals/usuarioCanalUpdate",
+                    type: "post",
+                    data: { usuario: usuario},
+                    success: function (data) {
+                        swal.close();
+                        if (parseInt(data.data) == -1) {
+                            $('.canceling').click();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Não foi possível associar o CANAL. Por favor, associe um ROLE primeiro.',
+                                showConfirmButton: false,
+                                timer: 3000
+                            })
+                        } else {
+                            location.reload();
+                        }
+
+                    },
+                    error: function (xhr, status, error) {
+                        swal.close();
+                        console.log(xhr)
+                    }
+                });
+            }
+
+            $('.salvarEstado').on('click', () => {
+                Swal.fire({
+                    title: 'Por favor, aguarde !',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                saveUpdateCanal();
+            })
+        })
+    </script>
+}

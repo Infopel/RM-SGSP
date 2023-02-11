@@ -1,0 +1,628 @@
+﻿@model SGSP.Models.Spot
+
+
+@{
+    ViewData["Title"] = " SGSP - Rádio de Moçambique | Anúncio - Create";
+}
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Anúncio</h1>
+    @*<div>
+            <a asp-action="Index">Back to List</a>
+        </div>*@
+</div>
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label class="control-label">Cliente</label>
+
+                        <div class="input-group">
+                            <select name="Cliente" class="form-control" id="clienteSelect2" data-message-error="Este campo é obrigatório.">
+                            </select>
+                            <span class="input-group-append">
+                                <button style="margin-left: 1rem;" type="button" data-toggle="modal" data-target="#modal-addCliente" class="btn btn-success rounded"><i class="fas fa-plus"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label"> Canal</label>
+                        <select class="form-control select2 isOb" name="Canal" id="IdCanal" data-message-error="Este campo é obrigatório." style="width: 100%;" disabled>
+                        </select>
+                        <span class="error invalid-feedback IdCanal"></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-7">
+                    <div class="form-group">
+                        <label asp-for="Designacao" class="control-label"> </label>
+                        <input asp-for="Designacao" data-message-error="Este campo é obrigatório." class="form-control disabled-on isOb" name="Designação" placeholder="Insira a designação do anúncio" disabled />
+                        <span class="error invalid-feedback Designacao"></span>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="fomr-group">
+                        <label class="control-label">Data de Emissão</label>
+                        <input type="date" class="form-control disabled-on isOb" name="Data de Emissão" data-message-error="Este campo é obrigatório." id="dataTermino" placeholder="dd/mm/yyyy" disabled />
+                        <span class="error invalid-feedback dataTermino"></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label"> Duração</label>
+                        <input type="text" class="form-control disabled-on isOb" id="duracao" name="Duração" data-message-error="Este campo é obrigatório." placeholder="HH:mm:ss" data-inputmask='"mask": "99:99:99s"' data-mask disabled />
+                        <span class="error invalid-feedback duracao"></span>
+                    </div>
+                </div>
+            </div>
+            <span class="id-cliente" hidden="hidden"></span>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 mb-3">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Planificação do Anúncio</h3>
+        </div>
+        <div class="card-body table-responsive">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="control-label">Data</label>
+                        <input type="date" class="form-control isToValida" name="Data de Término" data-message-error="Este campo é obrigatório." id="dataPlan" placeholder="dd/mm/yyyy" disabled />
+                        <span class="error invalid-feedback dataPlan"></span>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">Janela</label>
+                        <select class="form-control form-control-border isToValida isTodisable select2" name="Janela" data-message-error="Este campo é obrigatório." id="janelaPlan" style="width: 100%;" disabled>
+                            <option value="" disabled selected hidden>Selecione a Janela</option>
+                        </select>
+                        <span class="error invalid-feedback janelaPlan"></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="fomr-group">
+                        <label class="control-label">Periodicidade</label>
+                        <input type="text" class="form-control isToValida isTodisable" name="Periodicidade" data-message-error="Este campo é obrigatório." data-inputmask='"mask": "9999"' data-mask id="periodicidadePlan" placeholder="" disabled />
+                        <span class="error invalid-feedback periodicidadePlan"></span>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <div class="fomr-group">
+                        <label class="control-label">&nbsp;</label>
+                        <button type="button" class="form-control btn btn-primary btn-sm addPlanificacao isTodisable" disabled><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+            <br />
+            <br />
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <table class="table text-nowrap table-sm" id="tablePlanificacao">
+                        <thead>
+                            <tr>
+                                <th class="col-sm-1">#</th>
+                                <th class="col-sm-2">Data</th>
+                                <th class="col-sm-5">Janela</th>
+                                <th class="col-sm-3">Periodicidade</th>
+                                <th class="col-sm-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPlanificacao">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <br />
+            <br />
+            <div class="form-group">
+                <button class="btn btn-primary float-right saveAnuncio disabled-on" disabled>Cadastrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-addCliente" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Adicionar Cliente</h4>
+                <button type="button" class="close md-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Nome</label>
+                            <input type="text" class="form-control isObrigatorio" id="inputNome" name="Nome" data-message-error="Este campo é obrigatório." placeholder="Nome completo">
+                            <span class="error invalid-feedback inputNome"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>NUIT</label>
+                            <input type="text" class="form-control isObrigatorio" id="inputNUIT" name="nuit" data-message-error="Este campo é obrigatório." data-inputmask='"mask": "999999999"' data-mask placeholder="ex. 123456789" />
+                            <span class="error invalid-feedback inputNUIT"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control isObrigatorio" id="inputEmail" name="Email" placeholder="Enter email">
+                            <span class="error invalid-feedback inputEmail"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="text" class="form-control isObrigatorio" id="inputTelefone" name="Telefone" data-message-error="Este campo é obrigatório." data-inputmask='"mask": "+999 99 999 9999"' data-mask placeholder="">
+                            <span class="error invalid-feedback inputTelefone"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm saveNewClient">Salvar</button>
+                <button type="button" class="btn btn-outline-primary btn-sm md-close" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<span hidden id="roleUser">@User.FindFirst("Role").Value</span>
+<span hidden id="canalUser">@User.FindFirst("idCanal").Value</span>
+
+<style>
+    .input-group > .select2-container--default:not(:last-child) .select2-selection {
+        border-bottom-right-radius: 4px !important;
+        border-top-right-radius: 4px !important;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        padding-left: 0px !important;
+    }
+/*    .select2-container {
+        width: 90% !important;
+    }*/
+</style>
+
+@section Scripts {
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
+    <script>
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        var dropwonValue = '';
+        var dropwonValueJanelas = '';
+        var arrayA = '';
+
+        $('.select2').select2();
+        Validation.onChange();
+
+        const getRoleUser = $('#roleUser').html();
+        const getCanalUser = $('#canalUser').html();
+
+        "use strict";
+
+        var connection = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.Debug)
+            .withUrl("/planificacaoHub", {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .build();
+
+        connection.start().then(function () {
+            console.log('')
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        $('[data-mask]').inputmask({ "placeholder": "" });
+
+        $('#duracao').on('input', function () {
+            if ($(this).val().length < 9) {
+                $(this).addClass('invalid');
+            } else {
+                $(this).removeClass('invalid');
+            }
+        })
+
+        $('#clienteSelect2').on('input', function () {
+            if ($(this).val() != null) {
+                $(".disabled-on").prop("disabled", false);
+                $('.id-cliente').text($(this).val())
+            } else {
+                $(".disabled-on").prop("disabled", true);
+            }
+        })
+
+        function modalReset() {
+            $("#inputNomeEdit").val("")
+            $("#inputNuitEdit").val("")
+            $("#inputEmailEdit").val("")
+            $("#inputTelEdit").val("")
+            $("#inputNomeEdit, #inputEmailEdit, #inputTelEdit, #inputNuitEdit").removeClass('is-valid is-invalid invalid');
+
+        }
+
+        $('.saveNewClient').click(function () {
+            Validation.validate('.isObrigatorio');
+            if (!n) {
+                Swal.fire({
+                    title: 'Por favor, aguarde !',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+
+                const cliente = {
+                    Designacao: $('#inputNome').val(),
+                    Nuit: $('#inputNUIT').val(),
+                    Telefone: $('#inputTelefone').val(),
+                    EMail: $('#inputEmail').val()
+                }
+                $.post('/api/Clientes', { cliente: cliente })
+                    .done(function (data) {
+                        swal.close();
+                        if (parseInt(data.d) == -1) {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Este cliente já encontra-se cadastrado, por favor tente outro.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+
+                        }
+                        else {
+                            $('.id-cliente').text(data.id);
+
+                            const $newOption = $("<option selected='selected'></option>").val(data.id).text(data.designacao)
+                            $("#clienteSelect2").append($newOption).trigger('change');
+
+                            $('#modal-addCliente').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Cliente cadastrato com Sucesso.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            $(".disabled-on").prop("disabled", false);
+                            modalReset();
+
+
+                        }
+
+                    }).fail(function (e) {
+                        swal.close();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ocorreu um erro, Contacte a Administração.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    })
+            }
+
+        })
+
+        function reset() {
+            $('input, select, textarea').val('').trigger('change');
+            $(".disabled-on, .isTodisable").prop("disabled", true);
+            $("input, select, textarea").removeClass('is-valid is-invalid invalid');
+            $(".invalid-feedback").hide();
+            anuncioPlano = [];
+            $("#tbodyPlanificacao tr").remove();
+        }
+
+        function GetDateDiference(dataI, dataF) {
+            var date1 = new Date(dataI);
+            var date2 = new Date(dataF);
+
+            // To calculate the time difference of two dates
+            var Difference_In_Time = date2.getTime() - date1.getTime();
+
+            // To calculate the no. of days between two dates
+            var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+            return PushPlanificacao(Difference_In_Days, date1);
+        }
+
+        function PushPlanificacao(days, date) {
+            const planificacao = [];
+            const oldDate = date;
+
+            for (var i = 0; i < days; i++) {
+                const data =  new Date(oldDate.setDate(oldDate.getDate() + 1))
+                planificacao.push({ "Id": parseInt($('.id-cliente').html()), "IdCanal": 1, "DataPlanificacao": dateConvert(data)})
+            }
+
+            return planificacao;
+        }
+
+        function dateConvert(data) {
+            let date = new Date(data);
+            let d = date.getDate();
+            let m = date.getMonth() + 1;
+            let y = date.getFullYear();
+            return (m <= 9 ? '0' + m : m) + '/' + (d <= 9 ? '0' + d : d) + '/' + y;
+        }
+
+        //$('#pesCliente').keyup(function (e) {
+        //    if ($(this).hasClass('is-valid')) {
+        //        if (e.keyCode == 13) {
+        //            $('.pesquisarCliente').click();
+        //            $(this).trigger("enterKey");
+        //        }
+        //    }
+        //});
+
+        //$('#pesCliente').on('input', function () {
+        //    if ($(this).val().length === 9) {
+        //        $('.pesquisarCliente').click();
+        //    }
+        //})
+
+        $('.saveAnuncio').click(function () {
+            Validation.validate('.isOb');
+
+            if (!n) {
+                let tableCount = document.getElementById("tablePlanificacao").rows.length;
+
+                if (tableCount > 1) {
+                    Swal.fire({
+                        title: 'Por favor, aguarde !',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+
+                    let listA = []
+                    let totalperiodicidade = 0;
+
+                    for (let ap in anuncioPlano) {
+                        let plan = anuncioPlano[ap];
+                        if (plan.estado == 'activo') {
+                            listA.push({ "Id": parseInt($('.id-cliente').html()), "IdCanal": parseInt(plan.idCanal), 'IdJanela': parseInt(plan.idJanela), "DataPlanificacao": $('#dataPlan').val(), 'Estado': parseInt(plan.periodicidade) })
+                            totalperiodicidade += parseInt(plan.periodicidade);
+                        }
+                    }
+
+                    let anuncio = {
+                        Designacao: $('#Designacao').val(),
+                        IdCliente: parseInt($('.id-cliente').html()),
+                        DataFim: $('#dataTermino').val(),
+                        Duracao: $('#duracao').val().replace("s", ""),
+                        IdCanal: $('#IdCanal').val(),
+                        Periodicidade: totalperiodicidade
+                    }
+
+                    $.post('/api/Spots/anuncio/2', { anuncio: anuncio, list: listA })
+                        .done(function (data) {
+                                connection.invoke("PlanificacaoChange", parseInt($("#IdCanal").val())).catch(function (err) {
+                                    return console.error(err.toString());
+                                });
+
+                                swal.close();
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Anúncio cadastrado com Sucesso.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                                reset();
+                        }).fail(function (e) {
+                            swal.close();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Ocorreu um erro, Contacte a Administração.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        })
+                } else {
+                    swal.close();
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Por favor, preencha a planificação do Anúncio, para poder concluír o cadastro.'
+                    })
+                }
+            }
+        })
+
+        $('#IdCanal').on('change', function () {
+            dropwonValueJanelas = '<option value="" disabled selected hidden>Selecione a Janela</option>';
+
+            for (let i in arrayA) {
+                if (parseInt(arrayA[i].id) === parseInt($('#IdCanal').val())) {
+                    for (let a in arrayA[i].janelas) {
+                        dropwonValueJanelas += '<option value="' + arrayA[i].janelas[a].id + '">' + arrayA[i].janelas[a].designacao + '</option>';
+                    }
+                    break;
+                }
+            }
+
+            $("#janelaPlan").html(dropwonValueJanelas);
+            $(".isTodisable").prop("disabled", false);
+
+        })
+
+        const tabRemove = () => {
+            let inTD = document.getElementById("tablePlanificacao").rows.length;
+
+            if (inTD > 1) {
+                spotPlano = [];
+                $("#tbodyPlanificacao tr").remove();
+                $('#dataPlan').removeClass('is-valid is-invalid invalid');
+            }
+        }
+
+        $('#dataTermino').on('input', function () {
+            $('#dataPlan').val($(this).val());
+            tabRemove();
+        })
+
+        var anuncioPlano = []
+
+        const insertTr = function (id, data, janela, periodicidade) {
+            $('#tablePlanificacao tbody:first').append('<tr itemid="' + id + '">'
+                + '<td>'+id+'</td> '
+                + '<td>' + data +'</td> '
+                + '<td>' + janela +'</td>'
+                + '<td>' + periodicidade +'</td> '
+                + '<td><div class="btn-group-sm float-right">'
+                +'<button type="button" class="btn btn-danger btn-check-remove btn-sm" data-id="'+id+'"> <i class="fas fa-trash-alt"></i></button>'
+                +'</div></td> '
+                + '</tr>');
+
+            $('#periodicidadePlan, #janelaPlan').val("").trigger('change');
+        };
+
+
+        const removeTr = function () {
+            $(".btn-check-remove").on("click", function (e) {
+                var idT = $(this).attr('data-id');
+                var tRow = $(this).parent().parent().parent();
+
+                Swal.fire({
+                    title: 'Deseja Remover?',
+                    text: "Você não será capaz de reverter isso!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, Remover!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        tRow.remove();
+                        arrayRemove(idT);
+                        Swal.fire(
+                            'Removido!',
+                            'Sua planificação foi removida da lista com sucesso.',
+                            'success'
+                        )
+                    }
+                })
+
+            });
+        };
+
+        const arrayRemove = function (id) {
+            for (let i in anuncioPlano) {
+                if (parseInt(anuncioPlano[i].id) === parseInt(id)) {
+                    anuncioPlano[i].estado = 'inactivo';
+                    break;
+                }
+            }
+        };
+
+        $('.addPlanificacao').on('click', function () {
+            Validation.validate('.isToValida');
+
+            if (!n) {
+                const data = $('#dataPlan').val();
+                const janelaText = $('#janelaPlan').children("option").filter(":selected").text();
+                const janelaId = $('#janelaPlan').val();
+                const periodicidade = $('#periodicidadePlan').val();
+                const idPlano = anuncioPlano.length + 1;
+
+                anuncioPlano.push({ 'id': idPlano, 'idCanal': $('#IdCanal').val(), 'idJanela': janelaId, 'idCliente': parseInt($('.id-cliente').html()), 'periodicidade': periodicidade, 'dataPlanificacao': data, 'estado': 'activo' })
+                insertTr(idPlano, data, janelaText, periodicidade);
+                removeTr();
+                $('.isToValida').removeClass("is-invalid invalid");
+                $('.janelaPlan, .periodicidadePlan').hide();
+                $('#dataPlan').removeClass('is-valid is-invalid invalid');
+            }
+        })
+
+        $(document).ready(function () {
+            const getCanals = () => {
+                Swal.fire({
+                    title: 'Por favor, aguarde !',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                $.ajax({
+                    type: "GET",
+                    url: "/api/Canals",
+                    data: "{}",
+                    success: function (data) {
+                        swal.close();
+                        arrayA = data;
+                        dropwonValue = '<option value="" disabled selected hidden>Selecione o Canal</option>';
+                        for (let i = 0; i < data.length; i++) {
+                            dropwonValue += '<option value="' + data[i].id + '">' + data[i].designacao + '</option>';
+                        }
+                        $("#IdCanal").html(dropwonValue);
+                        $("#IdCanal").prop("disabled", false);
+
+                        //if (getRoleUser !== 'Administrador') {
+                        //    $("#IdCanal").val(getCanalUser).trigger('change')
+                        //    $("#IdCanal").prop("disabled", true);
+                        //} else
+                        //    $("#IdCanal").prop("disabled", false);
+                    }
+                });
+            };
+            getCanals();
+
+            $("#clienteSelect2").select2({
+                placeholder: "Pesquise o cliente pelo nome",
+                allowClear: true,
+                ajax: {
+                    url: '/api/Clientes/search/',
+                    contentType: "application/json; charset=utf-8",
+                    data: function (params) {
+                        var query =
+                        {
+                            any: params.term,
+                        };
+                        return query;
+                    },
+                    processResults: function (result) {
+                        return {
+                            results: $.map(result, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.designacao
+                                };
+                            }),
+                        };
+                    }
+                }
+            });
+
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

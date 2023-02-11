@@ -1,0 +1,108 @@
+﻿@model SGSP.Models.ListUserViewModel
+@{
+    ViewData["Title"] = "ListUsers";
+}
+
+
+<div class="col-sm-12 margin-1">
+    <h1 style="font-weight: 300;">Utilizadores</h1>
+</div>
+
+<div class="col-md-12 mb-4">
+    <a asp-action="CreateUserWithRole" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Adicionar</a>
+</div>
+<div class="col-md-12 table-responsive">
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover text-nowrap">
+                <thead>
+                    <tr>
+                        <th style="width: 10px">#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Roles</th>
+                        <th>Estado</th>
+                        <th class="float-right">Operações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int i = 0;}
+
+                    @foreach (var user in Model.users)
+                    {
+                        <tr>
+                            <td>@(i+1)</td>
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <td style="white-space: break-spaces;">@Model.roles[i]</td>
+                            <td>@user.LockoutEnabled</td>
+                            <td>
+                                <a class="btn btn-xs btn-default" asp-action="EditUser" asp-controller="Administration" asp-route-id="@user.Id">
+                                    Editar<i class="fas fa-pencil-alt"></i>
+                                </a>
+
+                                <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post">
+                                    <span id="confirmDeleteSpan_@user.Id" style="display:none">
+                                        <span>Você tem certeza que deseja apagar?</span>
+                                        <button type="submit" class="btn btn-xs btn-danger">Yes</button>
+                                        <a href="#" class="btn btn-xs btn-primary" onclick="confirmDelete('@user.Id', false)">No</a>
+                                    </span>
+
+                                    <span id="deleteSpan_@user.Id">
+                                        <a href="#" class="btn btn-xs btn-danger" onclick="confirmDelete('@user.Id', true)">Delete <i class="fas fa-trash-alt"></i></a>
+                                    </span>
+                                </form>
+
+                                <form asp-action="ResetPassword" asp-route-id="@user.Id" method="post">
+                                    <span id="confirmResetSpan_@user.Id" style="display:none">
+                                        <span>Deseja redefinir senha?</span>
+                                        <button type="submit" class="btn btn-xs btn-danger">Yes</button>
+                                        <a href="#" class="btn btn-xs btn-primary" onclick="confirmReset('@user.Id', false)">No</a>
+                                    </span>
+
+                                    <span id="ResetSpan_@user.Id">
+                                        <a href="#" class="btn btn-xs btn-default" onclick="confirmReset('@user.Id', true)">Redefinir senha <i class="fas fa-pencil-alt"></i></a>
+                                    </span>
+                                </form>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(uniqueId, isTrue) {
+
+            var deleteSpan = 'deleteSpan_' + uniqueId;
+            var confirmDeleteSpan = 'confirmDeleteSpan_' + uniqueId;
+
+            if (isTrue) {
+                $('#' + deleteSpan).hide();
+                $('#' + confirmDeleteSpan).show();
+            } else {
+                $('#' + deleteSpan).show();
+                $('#' + confirmDeleteSpan).hide();
+            }
+        }
+
+        function confirmReset(uniqueId, isTrue) {
+
+            var resetSpan = 'ResetSpan_' + uniqueId;
+            var confirmResetSpan = 'confirmResetSpan_' + uniqueId;
+
+            if (isTrue) {
+                $('#' + resetSpan).hide();
+                $('#' + confirmResetSpan).show();
+            } else {
+                $('#' + resetSpan).show();
+                $('#' + confirmResetSpan).hide();
+            }
+        }
+    </script>
+}

@@ -1,0 +1,75 @@
+﻿<div class="col-md-3">
+    <div class="sticky-top mb-3">
+        <div class="card">
+            <div class="card-body">
+                <partial name="_Calendar" />
+                <div id="mycalendar"></div>
+                <div id="external-events">
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title" style="font-weight: 600;">Spots</h4>
+            </div>
+            <div class="card-body">
+                <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
+                    <ul class="fc-color-picker" id="color-chooser">
+                        <li class="pendente">
+                            <div class="icheck-primary d-inline">
+                                <input type="checkbox" class="schedulerCheck" id="pendente" value="1" checked >
+                                <label for="pendente">Pendente</label>
+                            </div>
+                        </li>
+                        <li class="pendenteAuto isToHide">
+                            <div class="icheck-orange d-inline">
+                                <input type="checkbox" class="schedulerCheck" id="pendenteAuto" value="4" checked >
+                                <label for="pendenteAuto">Transmissão Imediata</label>
+                            </div>
+                        </li>
+                        <li class="transmitido">
+                            <div class="icheck-success d-inline">
+                                <input type="checkbox" class="schedulerCheck" id="transmitido" value="3" checked >
+                                <label for="transmitido">Transmitido</label>
+                            </div>
+                        </li>
+                        <li class="nTransmitido">
+                            <div class="icheck-danger d-inline">
+                                <input type="checkbox" class="schedulerCheck" id="nTransmitido" value="2" checked >
+                                <label for="nTransmitido">Não Transmitido</label>
+                            </div>
+                        </li>
+                        <li class="compensado">
+                            <div class="icheck-warning d-inline">
+                                <input type="checkbox" class="schedulerCheck" id="compensado" value="5" checked >
+                                <label for="compensado">Compensado</label>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-9">
+    <div class="card card-primary">
+        <div class="card-body p-0">
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-select {
+        background: none;
+        padding-left: 0;
+        border: 1px solid #fefefe;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+        .custom-select:focus {
+            border-color: #fff;
+        }
+</style>

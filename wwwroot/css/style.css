@@ -1,0 +1,453 @@
+﻿:root {
+--text: #666666;
+--blue: #0062FF;
+--textBlack: #2E2E3A;
+}
+
+html {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
+    display: block;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+/*    font-size: 1rem;*/
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+    background-color: #fff;
+}
+
+.main-footer {
+    background-color: #fff;
+    border-top: 1px solid #dee2e6;
+    color: var(--text);
+    padding: 1rem;
+    font-size: 13px;
+}
+
+.logo-style {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.brand-text {
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    line-height: normal;
+}
+
+.brand-img {
+    margin-top: unset;
+    margin-right: .7rem;
+    height: 33px;
+}
+
+.navbar-expand-md .navbar-collapse {
+    justify-content: center;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+}
+
+.icon > svg {
+   margin-right: .5em;
+}
+
+
+.icon > span{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.info {
+    line-height: 1rem;
+}
+
+.info a{
+    font-size: 15px;
+    color: #2E2E3A;
+    font-weight: 500;
+}
+
+.info span{
+   font-size: 12px;
+   color: #9A9AAF;
+}
+
+.d-flex {
+    align-items: center;
+}
+
+.navbar-expand-md .navbar-nav {
+    align-items: center;
+}
+
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover{
+    color: var(--blue);
+}
+
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover svg > path {
+    fill: var(--blue);
+}
+
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link.active svg > path
+{
+    fill: var(--blue);
+}
+
+.navbar-light .navbar-nav .active > .nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .show > .nav-link{
+    color: var(--blue);
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: var(--textBlack);
+}
+
+label > span {
+    color: #ED0131;
+}
+
+label:not(.form-check-label):not(.custom-file-label) {
+    font-weight: normal;
+    color: #212529;
+    font-size: 16px;
+}
+
+tr {
+    color: #666666;
+}
+
+tr > th{
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.calendar {
+    background-color: #fff;
+    padding: 1rem 0 1rem 0;
+    border-radius: 16px;
+}
+
+.calendar-container {
+    position: relative;
+    margin: 50px auto;
+    max-width: 500px;
+}
+
+.month {
+    width: 100%;
+    height: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 .6rem;
+    text-align: center;
+}
+
+    .month i {
+        font-size: 1.3rem;
+        cursor: pointer;
+        color: #3c4043;
+        margin-bottom: .8rem;
+    }
+
+    .month h1 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: .8rem;
+        color: #2E2E3A;
+    }
+
+    .month p {
+        font-size: 1.6rem;
+    }
+
+.weekdays {
+    width: 100%;
+    height: 2rem;
+    padding: 0 0.4rem;
+    display: flex;
+    align-items: center;
+    color: #CFCFCF;
+}
+
+    .weekdays div {
+        font-size: 11px;
+        font-weight: 200;
+        letter-spacing: 0.1rem;
+        width: calc(44.2rem / 7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+.days {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.2rem;
+    color: #70757a;
+}
+
+    .days div {
+        font-size: 12px;
+        margin: 0.3rem;
+        width: calc(12rem / 7);
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 500;
+    }
+
+        .days div:hover:not(.today) {
+            background-color: #f1f3f4;
+            cursor: pointer;
+            border-radius: 8px;
+            color: #70757a;
+        }
+
+.prev-date,
+.next-date {
+    opacity: 0.5;
+}
+
+.today {
+    background-color: #007bff;
+    border-radius: 8px;
+    color: white;
+}
+.fc-color-picker li > span {
+    font-size: 16px;
+    margin-left: .9rem;
+}
+.fc-color-picker li > a {
+    cursor: unset;
+}
+.fc-color-picker li {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+td > i{
+    cursor: pointer;
+}
+/*.fc-daygrid-dot-event .fc-event-title {
+    white-space: pre-wrap;
+}
+.fc-h-event .fc-event-title-container {
+    white-space: pre-wrap;
+}
+.fc-direction-ltr .fc-daygrid-event .fc-event-time{
+    display: none;
+}
+.fc-daygrid-dot-event {
+    align-items: baseline !important;
+}*/
+
+.fc-day-number {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .3px;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    width: max-content;
+    min-width: 24px;
+    color: #70757a;
+    margin-top: 3px;
+    height: 24px;
+    line-height: 24px;
+    pointer-events: auto;
+}
+.fc-day-number:hover {
+    outline: none;
+    cursor: pointer;
+    margin-top: 3px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    color: #70757a;
+    background-color: #f1f3f4;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    text-decoration: none !important;
+}
+
+th.fc-widget-header {
+    color: #70757a;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.fc-widget-header {
+    background: #ffffff;
+}
+
+.fc-state-highlight > .fc-day-number {
+    color: #ffffff;
+    background: #007bff;
+    border-radius: 50%;
+}
+
+.fc-unthemed td.fc-today {
+    background: #fcf8e3;
+}
+
+h3.h3-style {
+    color: #3c4043;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 28px;
+    white-space: nowrap;
+}
+
+.fc-toolbar, .fc-toolbar.fc-header-toolbar{
+    padding: 8px;
+}
+
+::-webkit-scrollbar {
+    background: transparent;
+    height: 8px;
+    width: 8px;
+}
+
+.fc-scroller::-webkit-scrollbar-thumb {
+    border-bottom: 4px solid white;
+    border-left: 4px solid white;
+    border-right: 4px solid white;
+    border-top: 4px solid white;
+}
+
+.fc-scroller::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+::-webkit-scrollbar-thumb {
+    border: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background: #dadce0;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    min-height: 40px;
+}
+
+.bootstrap-datetimepicker-widget {
+    width: 100%;
+}
+
+.margin-1{
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+}
+.margin-top{
+    margin-top: 1.5rem;
+}
+
+.fc-title{
+    font-weight: 600;
+}
+
+.select-Style > select {
+    width: 150px;
+    background-color: transparent;
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+    border-color: #007bff;
+}
+
+.select-Style-2 > select {
+    width: 300px;
+    background-color: transparent;
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+    border-color: #007bff;
+}
+.select-Style-2 {
+    float: right;
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+}
+
+.select-Style-2 > .select2-container--default .select2-selection--single {
+    background-color: transparent !important;
+    border-color: #007bff;
+
+}
+
+.mg-1{
+    margin-right: 1rem;
+}
+
+.page-link, .dataTables_info {
+    font-size: 13px;
+}
+.options-action > i {
+    padding: .2rem;
+    cursor: pointer;
+}
+
+textarea {
+    resize: none;
+}
+.fc-ltr .fc-axis{
+    display: none;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    padding-left: 0.5rem !important;
+}
+
+a.edit-click, a.edit-click-disabled {
+    color: #666666;
+}
+
+a.edit-click-disabled > i, i.destivarr-disabled{
+    cursor: no-drop;
+}
+
+.isToHide {
+    display: none !important;
+}
+.mt-20 {
+    margin-top: -1.3rem;
+}
+/*.main-header .nav-link{
+    height: auto;
+}*/
+
+span.d-block {
+    font-size: 15px;
+    color: #2E2E3A;
+    font-weight: 500;
+}
+
+.view-parecer {
+    cursor: pointer;
+}
+
+.navbar-fixed {
+    left: 0;
+    position: sticky;
+    right: 0;
+    top: 0;
+    z-index: 1037;
+}

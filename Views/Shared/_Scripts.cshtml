@@ -1,0 +1,93 @@
+﻿<script src="~/plugins/jquery/jquery.min.js"></script>
+<script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+
+    function GetTodayDate() {
+        let today = new Date();
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1;
+
+        const yyyy = today.getFullYear();
+
+        if (dd < 10)
+            dd = '0' + dd
+        if (mm < 10)
+            mm = '0' + mm
+
+        return today = yyyy + '-' + mm + '-' + dd;
+    }
+
+    function GetTodayHour() {
+        const d = new Date();
+        let hour = d.getHours();
+        let min = d.getMinutes();
+
+        if (min < 10)
+            min = "0" + min;
+
+        if (hour < 10)
+            hour = '0' + hour
+
+        return hour + ":" + min;
+    }
+
+    var path = window.location.pathname;
+    path = path.replace(/\/$/, "");
+    path = decodeURIComponent(path);
+
+    $(".nav-item a").each(function () {
+        var href = $(this).attr('href');
+        if (path.substring(0, href.length) === href) {
+            $(this).closest('a').addClass('active');
+        }
+    });
+
+</script>
+
+<!-- INITIALIZE AOS -->
+<!--<script>
+    AOS.init();
+    $(".nano").nanoScroller();
+</script>-->
+<script src="~/plugins/jquery/jquery.min.js"></script>
+
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/chart.js/Chart.min.js"></script>
+<script src="~/plugins/sparklines/sparkline.js"></script>
+<script src="~/plugins/jqvmap/jquery.vmap.min.js"></script>
+<script src="~/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+<script src="~/plugins/jquery-knob/jquery.knob.min.js"></script>
+<script src="~/plugins/moment/moment.min.js"></script>
+<script src="~/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="~/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="~/plugins/summernote/summernote-bs4.min.js"></script>
+<script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+<script src="~/dist/js/adminlte.js"></script>
+<script src="~/plugins/aos-master/dist/aos.js"></script>
+<script src="~/plugins/nanoScroller/jquery.nanoscroller.js"></script>
+<script src="~/plugins/animsition-master/dist/js/animsition.min.js"></script>
+<script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="~/plugins/toastr/toastr.min.js"></script>
+<script src="~/js/Validacao.js"></script>
+
+<script>
+    var Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
+
+    $('.md-close').on('click', () => {
+        $("input, select").removeClass('is-valid is-invalid invalid');
+        $(".error").hide();
+        $('input, select').val("").trigger('change');
+        $(".disabled-on").prop("disabled", true);
+    })
+
+
+    $("input[type=date]").prop("min", GetTodayDate());
+
+</script>
